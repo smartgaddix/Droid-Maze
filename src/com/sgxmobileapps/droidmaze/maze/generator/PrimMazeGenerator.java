@@ -1,3 +1,18 @@
+/**
+ * Copyright 2011 Massimo Gaddini
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.  
+ */
 package com.sgxmobileapps.droidmaze.maze.generator;
 
 import com.sgxmobileapps.droidmaze.maze.MazeCell;
@@ -5,121 +20,131 @@ import com.sgxmobileapps.droidmaze.maze.MazeCell;
 import java.util.Random;
 import java.util.Vector;
 
+/**
+ * @author Massimo Gaddini
+ *
+ */
 public class PrimMazeGenerator implements MazeGenerator {
 
-	class PrimCell extends MazeCell {
-		private static final byte CELL_IN = 0x10;
-		private static final byte CELL_FRONTIER = 0x20;
+    class PrimCell extends MazeCell {
 
-		byte mState;
-		
-		PrimCell(int x, int y){
-			super(x,y);
-		}
+        private static final byte CELL_IN       = 0x10;
+        private static final byte CELL_FRONTIER = 0x20;
 
-		boolean isOut(){
-			return mState == 0;
-		}
+        byte                      mState;
 
-		boolean isIn(){
-			return (mState & CELL_IN) != 0;
-		}
+        PrimCell(int x, int y) {
+            super(x, y);
+        }
 
-		void setFrontier(){
-			mState |= CELL_FRONTIER;
-		}
+        boolean isOut() {
+            return mState == 0;
+        }
 
-		void setIn(){
-			mState |= CELL_IN;
-		}
-		
-		void clear(){
-			mState = 0;
-		}
-	}
+        boolean isIn() {
+            return ( mState & CELL_IN ) != 0;
+        }
 
-	private PrimCell[][] mGrid = null;
-	private Vector<PrimCell> mFrontier = new Vector<PrimCell>();
-	private Vector<PrimCell> mNeighbors = new Vector<PrimCell>();
-	private Random mRandom = new Random();
-	private int mHeight = 0;
-	private int mWidth = 0;
+        void setFrontier() {
+            mState |= CELL_FRONTIER;
+        }
 
-	private void init(int height, int width){
+        void setIn() {
+            mState |= CELL_IN;
+        }
 
-		mRandom.setSeed(System.currentTimeMillis());
+        void clear() {
+            mState = 0;
+        }
+    }
 
-		mFrontier.clear();
+    private PrimCell[][]     mGrid      = null;
+    private Vector<PrimCell> mFrontier  = new Vector<PrimCell>();
+    private Vector<PrimCell> mNeighbors = new Vector<PrimCell>();
+    private Random           mRandom    = new Random();
+    private int              mHeight    = 0;
+    private int              mWidth     = 0;
 
-		if ((height != mHeight) || (width != mWidth)) {
-			mGrid = new PrimCell[height][width];
+    private void init(int height, int width) {
 
-		}
+        mRandom.setSeed(System.currentTimeMillis());
 
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				if (mGrid[i][j] == null) {
-					mGrid[i][j] = new PrimCell(i, j);
-				}
+        mFrontier.clear();
 
-				mGrid[i][j].clear();
-			}
-		}
+        if ( ( height != mHeight ) || ( width != mWidth )) {
+            mGrid = new PrimCell[height][width];
 
-		this.mHeight = height;
-		this.mWidth = width;
-	}
+        }
 
-	private void addFrontierCell(int x, int y) {
-		if  ( (x >= 0) && (y >= 0) && (y < mWidth) && (x < mHeight) && (mGrid[x][y].isOut()) ) {
-			mGrid[x][y].setFrontier();
-			mFrontier.add(mGrid[x][y]);
-  		}
-	}
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (mGrid[i][j] == null) {
+                    mGrid[i][j] = new PrimCell(i, j);
+                }
 
-	private void markInCell(int x, int y) {
-		mGrid[x][y].setIn();
-		addFrontierCell(x - 1, y);
-		addFrontierCell(x + 1, y);
-		addFrontierCell(x, y - 1);
-		addFrontierCell(x, y + 1);
-	}
+                mGrid[i][j].clear();
+            }
+        }
 
-	private void findNeighbors(int x, int y) {
-		mNeighbors.clear();
+        this.mHeight = height;
+        this.mWidth = width;
+    }
 
-		if ( (x > 0) && (mGrid[x - 1][y].isIn()) )
-			mNeighbors.add(mGrid[x - 1][y]);
+    private void addFrontierCell(int x, int y) {
+        if ( ( x >= 0 ) && ( y >= 0 ) && ( y < mWidth ) && ( x < mHeight )
+                && ( mGrid[x][y].isOut() )) {
+            mGrid[x][y].setFrontier();
+            mFrontier.add(mGrid[x][y]);
+        }
+    }
 
-		if ( ( (x + 1) < mHeight) && (mGrid[x + 1][y].isIn()) )
-			mNeighbors.add(mGrid[x + 1][y]);
+    private void markInCell(int x, int y) {
+        mGrid[x][y].setIn();
+        addFrontierCell(x - 1, y);
+        addFrontierCell(x + 1, y);
+        addFrontierCell(x, y - 1);
+        addFrontierCell(x, y + 1);
+    }
 
-		if ( (y > 0) && (mGrid[x][y - 1].isIn()) )
-			mNeighbors.add(mGrid[x][y - 1]);
+    private void findNeighbors(int x, int y) {
+        mNeighbors.clear();
 
-		if ( ( (y + 1) < mWidth) && (mGrid[x][y + 1].isIn()) )
-			mNeighbors.add(mGrid[x][y + 1]);
-	}
+        if ( ( x > 0 ) && ( mGrid[x - 1][y].isIn() )) {
+            mNeighbors.add(mGrid[x - 1][y]);
+        }
 
-	public MazeCell[][] generate(int height, int width){
-		init(height, width);
+        if ( ( ( x + 1 ) < mHeight ) && ( mGrid[x + 1][y].isIn() )) {
+            mNeighbors.add(mGrid[x + 1][y]);
+        }
 
-		markInCell(mRandom.nextInt(height*width)/width, mRandom.nextInt(width*height)%width);
-		while (!mFrontier.isEmpty()) {
-			int currIndex = mRandom.nextInt(mFrontier.size());
-			PrimCell curr = mFrontier.get(currIndex);
-			mFrontier.remove(currIndex);
+        if ( ( y > 0 ) && ( mGrid[x][y - 1].isIn() )) {
+            mNeighbors.add(mGrid[x][y - 1]);
+        }
 
-			findNeighbors(curr.getX(), curr.getY());
+        if ( ( ( y + 1 ) < mWidth ) && ( mGrid[x][y + 1].isIn() )) {
+            mNeighbors.add(mGrid[x][y + 1]);
+        }
+    }
 
-			PrimCell currNeighbor = mNeighbors.get(mRandom.nextInt(mNeighbors.size()));
+    public MazeCell[][] generate(int height, int width) {
+        init(height, width);
 
-			curr.openTo(currNeighbor);
-			currNeighbor.openTo(curr);
+        markInCell(mRandom.nextInt(height * width) / width, mRandom.nextInt(width * height) % width);
+        while (!mFrontier.isEmpty()) {
+            int currIndex = mRandom.nextInt(mFrontier.size());
+            PrimCell curr = mFrontier.get(currIndex);
+            mFrontier.remove(currIndex);
 
-			markInCell(curr.getX(), curr.getY());
-		}
-		
-		return mGrid;
-	}
+            findNeighbors(curr.getX(), curr.getY());
+
+            PrimCell currNeighbor = mNeighbors.get(mRandom.nextInt(mNeighbors.size()));
+
+            curr.openTo(currNeighbor);
+            currNeighbor.openTo(curr);
+
+            markInCell(curr.getX(), curr.getY());
+        }
+
+        return mGrid;
+    }
 }
