@@ -19,92 +19,78 @@ import com.sgxmobileapps.droidmaze.maze.MazeCell;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeSet;
 
 /**
  * @author Massimo Gaddini
  *
  */
 public class KruskalMazeGenerator implements MazeGenerator {
+    
+    class KruskalCell extends MazeCell implements Comparable<KruskalCell> {
 
-    class CellTree {
-
-        CellTree mParent;
-
-        public CellTree() {
-            mParent = null;
-        }
-
-        public CellTree getRoot() {
-            if (mParent == null) {
-                return this;
-            }
-
-            return mParent.getRoot();
-        }
-
-        public boolean contains(CellTree other) {
-            return ( getRoot() == other.getRoot() );
-        }
-
-        public void join(CellTree other) {
-            other.getRoot().mParent = this;
-        }
-    }
-
-    /*
-     * class KruskalCell extends MazeCell implements Comparable<KruskalCell> {
-     * private TreeSet<KruskalCell> mSet;
-     * 
-     * KruskalCell(int x, int y){ super(x,y); }
-     * 
-     * public void init(){ mSet = new TreeSet<KruskalCell>(); mSet.add(this); }
-     * 
-     * public boolean joinToSet(KruskalCell otherCell) { if
-     * (!mSet.containsAll(otherCell.mSet)) { mSet.addAll(otherCell.mSet);
-     * otherCell.mSet.addAll(mSet); otherCell.mSet = mSet; return true; }
-     * 
-     * return false; }
-     * 
-     * public int compareTo(KruskalCell another) { if (getX() < another.getX())
-     * return -1; else if (getX() > another.getX()) return 1; else { if (getY()
-     * < another.getY()) return -1; else if (getY() > another.getY()) return 1;
-     * } return 0; }
-     * 
-     * @Override public boolean equals(Object obj) { if (this == obj) return
-     * true;
-     * 
-     * if (obj == null) return false;
-     * 
-     * if (getClass() != obj.getClass()) return false;
-     * 
-     * KruskalCell other = (KruskalCell) obj;
-     * 
-     * if ((getX() == other.getX()) && (getY() == other.getY()) ) return true;
-     * 
-     * return false; } }
-     */
-    class KruskalCell extends MazeCell {
-
-        private CellTree mSet;
+        private TreeSet<KruskalCell> mSet;
 
         KruskalCell(int x, int y) {
             super(x, y);
         }
 
         public void init() {
-            mSet = new CellTree();
+            mSet = new TreeSet<KruskalCell>();
+            mSet.add(this);
         }
 
-        public boolean joinTree(KruskalCell otherCell) {
-            if (!mSet.contains(otherCell.mSet)) {
-                mSet.join(otherCell.mSet);
+        public boolean joinSet(KruskalCell otherCell) {
+            if (!mSet.contains(otherCell)) {
+                mSet.addAll(otherCell.mSet);
+                
+                Iterator<KruskalCell> it = otherCell.mSet.iterator();
+                while (it.hasNext()) {
+                    KruskalCell cell = it.next();
+                    cell.mSet = mSet;
+                }
+                
                 return true;
             }
 
             return false;
         }
+
+        public int compareTo(KruskalCell another) { 
+        	if (getX() < another.getX())
+        		return -1; 
+        	else if (getX() > another.getX()) 
+        		return 1; 
+        	else { 
+        		if (getY() < another.getY()) 
+        			return -1; 
+        		else if (getY() > another.getY()) 
+        			return 1;
+        		} 
+        	return 0; 
+        }
+         
+        @Override 
+        public boolean equals(Object obj) { 
+        	if (this == obj) 
+        		return true;
+         
+        	if (obj == null) 
+        		return false;
+         
+        	if (getClass() != obj.getClass()) 
+        		return false;
+         
+        	KruskalCell other = (KruskalCell) obj;
+         
+        	if ((getX() == other.getX()) && (getY() == other.getY()) ) 
+        		return true;
+ 
+        	return false; 
+        } 
     }
 
     private KruskalCell[][] mGrid   = null;
@@ -153,7 +139,7 @@ public class KruskalMazeGenerator implements MazeGenerator {
             j = wall % ( 2 * mWidth - 1 );
 
             if (j >= ( mWidth - 1 )) {
-                /* bottom wall */
+                /* south wall */
                 is = i + 1;
                 j -= ( mWidth - 1 );
                 js = j;
@@ -166,7 +152,7 @@ public class KruskalMazeGenerator implements MazeGenerator {
                 continue;
             }
 
-            if (mGrid[i][j].joinTree(mGrid[is][js])) {
+            if (mGrid[i][j].joinSet(mGrid[is][js])) {
                 mGrid[i][j].openTo(mGrid[is][js]);
                 mGrid[is][js].openTo(mGrid[i][j]);
             }

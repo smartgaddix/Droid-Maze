@@ -82,8 +82,6 @@ public class Maze {
                 .getHeight()
                 * scaleXY, markerTexture);
 
-        // pieceSprite.setScaleCenter(0, 0);
-        // pieceSprite.setScale(scaleXY, scaleXY);
         markerSprite.setPosition(getMarkerStartPositionX(), getMarkerStartPositionY());
 
         FixtureDef markerFixtureDef = PhysicsFactory.createFixtureDef(1, 0, 0);
