@@ -2,6 +2,7 @@ package com.sgxmobileapps.droidmaze.test;
 
 import com.sgxmobileapps.droidmaze.maze.Maze;
 import com.sgxmobileapps.droidmaze.maze.generator.BacktrackingMazeGenerator;
+import com.sgxmobileapps.droidmaze.maze.generator.IterativeBacktrackingMazeGenerator;
 import com.sgxmobileapps.droidmaze.maze.generator.PrimMazeGenerator;
 
 import android.test.AndroidTestCase;
@@ -31,6 +32,15 @@ public class TestGenerator extends AndroidTestCase {
         
         maze.setMazeSize(30, 30);
         maze.setMazeGenerator(new BacktrackingMazeGenerator());
+        
+        maze.generateMaze();
+    }
+	
+	public void testIterativeBacktrackingGenerator() {
+        Maze maze = new Maze();
+        
+        maze.setMazeSize(30, 30);
+        maze.setMazeGenerator(new IterativeBacktrackingMazeGenerator());
         
         maze.generateMaze();
     }

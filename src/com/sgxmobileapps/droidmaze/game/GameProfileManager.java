@@ -16,6 +16,7 @@
 
 package com.sgxmobileapps.droidmaze.game;
 
+import com.sgxmobileapps.droidmaze.maze.generator.IterativeBacktrackingMazeGenerator;
 import com.sgxmobileapps.droidmaze.maze.generator.KruskalMazeGenerator;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
@@ -37,9 +38,9 @@ public class GameProfileManager {
 
         mNickname = "Smartgaddix";
         mLevel = 1;
-        mGenerator = new KruskalMazeGenerator();
-        mMazeHeight = 40;
-        mMazeWidth = 40;
+        mGenerator = new IterativeBacktrackingMazeGenerator();
+        mMazeHeight = 50;
+        mMazeWidth = 50;
         mAccelerationFactor = (float) 0.5;
     }
 

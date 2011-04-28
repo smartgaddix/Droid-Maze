@@ -51,6 +51,7 @@ import java.util.concurrent.Callable;
 public class MazeActivity extends BaseGameActivity implements IAccelerometerListener {
 
     private static final float SCORE_BAR_HEIGHT_PERC = 0.1f;
+    private static final float AD_BAR_HEIGHT_PERC = 0.1f;
 
     private PhysicsWorld       mPhysicsWorld;
     private Camera             mCamera;
@@ -58,6 +59,8 @@ public class MazeActivity extends BaseGameActivity implements IAccelerometerList
     private int                mCameraHeight;
     private int                mScoreBarWidth;
     private int                mScoreBarHeight;
+    private int                mAdBarWidth;
+    private int                mAdBarHeight;
     private int                mMazeAreaWidth;
     private int                mMazeAreaHeight;
     private Texture            mTexture;
@@ -75,8 +78,11 @@ public class MazeActivity extends BaseGameActivity implements IAccelerometerList
 
         mScoreBarHeight = (int) ( mCameraHeight * SCORE_BAR_HEIGHT_PERC );
         mScoreBarWidth = mCameraWidth;
+        
+        mAdBarHeight = (int) ( mCameraHeight * AD_BAR_HEIGHT_PERC );
+        mAdBarWidth = mCameraWidth;
 
-        mMazeAreaHeight = mCameraHeight - mScoreBarHeight;
+        mMazeAreaHeight = mCameraHeight - mScoreBarHeight - mAdBarHeight;
         mMazeAreaWidth = mCameraWidth;
     }
 
