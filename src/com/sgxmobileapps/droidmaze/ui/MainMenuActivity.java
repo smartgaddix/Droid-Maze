@@ -23,6 +23,7 @@ import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.scene.menu.MenuScene;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
 import org.anddev.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.anddev.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
@@ -76,11 +77,11 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
         
         MenuScene menuScene = new MenuScene(getCamera());
         
-        SpriteMenuItem startMenuItem = new SpriteMenuItem(MENU_START, mMenuStartTextureRegion);
+        IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, mMenuStartTextureRegion), (float) 1.2, 1);
         startMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
         menuScene.addMenuItem(startMenuItem);
 
-        SpriteMenuItem quitMenuItem = new SpriteMenuItem(MENU_QUIT, mMenuQuitTextureRegion);
+        IMenuItem quitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_QUIT, mMenuQuitTextureRegion), (float) 1.2, 1);
         quitMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
         menuScene.addMenuItem(quitMenuItem);
         
@@ -92,10 +93,9 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
         menuScene.setMenuAnimator(menuAnimator);
         menuScene.buildAnimations();
 
-        menuScene.setBackgroundEnabled(false);
+        menuScene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         menuScene.setOnMenuItemClickListener(this);
 
-        mainScene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         mainScene.setChildScene(menuScene, false, true, true);        
         return mainScene;
     }
