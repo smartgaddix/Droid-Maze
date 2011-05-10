@@ -73,8 +73,6 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
      * @see org.anddev.andengine.ui.IGameInterface#onLoadScene()
      */
     public Scene onLoadScene() {
-        Scene mainScene = new Scene(1);
-        
         MenuScene menuScene = new MenuScene(getCamera());
         
         IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, mMenuStartTextureRegion), (float) 1.2, 1);
@@ -89,15 +87,14 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
 //        menuScene.setBackground(new SpriteBackground(backgroundSprite));
         
         MultiSlideMenuAnimator menuAnimator = new MultiSlideMenuAnimator(20, EaseBackOut.getInstance());
-        menuAnimator.setDuration(5);
+        menuAnimator.setDuration(2);
         menuScene.setMenuAnimator(menuAnimator);
         menuScene.buildAnimations();
 
         menuScene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         menuScene.setOnMenuItemClickListener(this);
-
-        mainScene.setChildScene(menuScene, false, true, true);        
-        return mainScene;
+        
+        return menuScene;
     }
 
     /* (non-Javadoc)
