@@ -2,6 +2,7 @@
 /gen
 /tests/DroidMazeTest/bin
 /tests/DroidMazeTest/gen
+/graphics
 .DS_Store?
 .svn
 
