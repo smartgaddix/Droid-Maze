@@ -15,22 +15,17 @@
  */
 package com.sgxmobileapps.droidmaze.ui;
 
-import android.graphics.Color;
 import android.hardware.SensorManager;
 
 import com.badlogic.gdx.math.Vector2;
 import com.sgxmobileapps.droidmaze.game.GameProfileManager;
 import com.sgxmobileapps.droidmaze.maze.Maze;
+import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
 import com.sgxmobileapps.droidmaze.R;
 
-import org.anddev.andengine.engine.handler.timer.ITimerCallback;
-import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
-import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
-import org.anddev.andengine.opengl.font.Font;
-import org.anddev.andengine.opengl.font.FontFactory;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
@@ -50,28 +45,24 @@ public class MazeActivity extends BaseActivity implements IAccelerometerListener
 
     private PhysicsWorld       mPhysicsWorld;
     private TextureRegion      mMarkerTexture;
-    private Font               mDroidFont;
 
     private Maze               mMaze                 = new Maze();
     private GameProfileManager mLevelManager         = new GameProfileManager(); /* TODO */
-    private int                mElapsedSeconds       = 0;
+    private LevelBarShape      mLevelBar; 
     
 
     public void onLoadResources() {
-
+        
+        mLevelBar = new LevelBarShape(0, 0, getScoreBarWidth(), getScoreBarHeight());
+        mLevelBar.loadResources(mEngine.getTextureManager(), mEngine.getFontManager(), this);
+        
         /* Texture */
-        Texture droidFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         Texture texture = new Texture(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
-        /* Font */
-        FontFactory.setAssetBasePath("font/");
-        mDroidFont = FontFactory.createFromAsset(droidFontTexture, this, "Droid.ttf", (int)(getScoreBarHeight()*0.5), true, Color.BLACK);
-
         /* TextureRegion */
         mMarkerTexture = TextureRegionFactory.createFromAsset(texture, this, "gfx/face_circle.png", 0, 0); // 32x32
         
-        mEngine.getTextureManager().loadTextures(texture, droidFontTexture);
-        mEngine.getFontManager().loadFonts(mDroidFont);
+        mEngine.getTextureManager().loadTexture(texture);
 
         enableAccelerometerSensor(this);
     }
@@ -85,8 +76,8 @@ public class MazeActivity extends BaseActivity implements IAccelerometerListener
         mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
         scene.registerUpdateHandler(mPhysicsWorld);
         
-        final ChangeableText elapsedText = new ChangeableText(0, (getScoreBarHeight() - mDroidFont.getLineHeight())/2, mDroidFont, "00:00", "XXXXX".length());
-        scene.getLastChild().attachChild(elapsedText);
+        mLevelBar.initShape();
+        scene.getLastChild().attachChild(mLevelBar);
 
         this.doAsync(R.string.dialog_loading_title, R.string.dialog_loading_message,
                 new Callable<Void>() {
@@ -106,15 +97,6 @@ public class MazeActivity extends BaseActivity implements IAccelerometerListener
                                 getEngine().getScene().getChild(0), mPhysicsWorld);
                         mMaze.addMarker(mMarkerTexture, getEngine().getScene().getChild(1),
                                 mPhysicsWorld);
-                        
-                        scene.registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
-                            
-                            public void onTimePassed(final TimerHandler pTimerHandler) {
-                                mElapsedSeconds = (int)mEngine.getSecondsElapsedTotal();
-                                elapsedText.setText(String.format("%02d:%02d", mElapsedSeconds/60, mElapsedSeconds%60));
-                            }
-                        }));
-
                     }
                 });
 
