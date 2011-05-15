@@ -28,20 +28,30 @@ import org.anddev.andengine.opengl.font.FontManager;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.vertex.RectangleVertexBuffer;
 
 
 /**
+ * Shape implementation of the level bar displaying time elapsed and current level.
+ * 
  * @author Massimo Gaddini
  *
  */
 public class LevelBarShape extends BaseRectangle implements ComplexShape{
     
-    private int                mElapsedSeconds       = 0;
-    private Font               mDroidFont;
+    /** 
+     * Elapsed seconds displayed in the level bar
+     */
+    private int  mElapsedSeconds = 0;
+    
+  
+    /**
+     * Font used for text in the level bar
+     */
+    private Font mDroidFont;
 
     /**
-     * @param pX
+     * Creates a LevelBarShape class
+     * @param pX 
      * @param pY
      * @param pWidth
      * @param pHeight
@@ -50,22 +60,10 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
         super(pX, pY, pWidth, pHeight);
     }
 
-    /**
-     * @param pX
-     * @param pY
-     * @param pWidth
-     * @param pHeight
-     * @param pRectangleVertexBuffer
-     */
-    public LevelBarShape(float pX, float pY, float pWidth, float pHeight,
-            RectangleVertexBuffer pRectangleVertexBuffer) {
-        super(pX, pY, pWidth, pHeight, pRectangleVertexBuffer);
-    }
 
     /* 
      * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#loadResources(org.anddev.andengine.opengl.texture.TextureManager, org.anddev.andengine.opengl.font.FontManager, android.content.Context)
      */
-    @Override
     public void loadResources(TextureManager textureManager, FontManager fontManager, Context ctx) {
         /* Texture */
         Texture droidFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -81,13 +79,15 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
     /* 
      * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#initShape()
      */
-    @Override
     public void initShape() {
+        /* transparent white */
         setColor(1.0f, 1.0f, 1.0f, 0.0f);
         
+        /* label for elapsed time */
         final ChangeableText elapsedText = new ChangeableText(0, (getHeightScaled() - mDroidFont.getLineHeight())/2, mDroidFont, "00:00", "XXXXX".length());
         attachChild(elapsedText);
         
+        /* timer handler for updating the elapsed time label */
         registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
             public void onTimePassed(final TimerHandler pTimerHandler) {
                 mElapsedSeconds += (int)pTimerHandler.getTimerSeconds();
