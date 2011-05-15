@@ -1,5 +1,5 @@
 - marker track drawing
-- maze's exit 
+- maze exit 
 - level manager
 - persistent score
 - game time (total and per maze)
