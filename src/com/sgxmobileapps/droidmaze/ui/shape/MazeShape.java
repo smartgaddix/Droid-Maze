@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.  
  */
-package com.sgxmobileapps.droidmaze.maze;
+package com.sgxmobileapps.droidmaze.ui.shape;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.sgxmobileapps.droidmaze.maze.generator.MazeCell;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
 import org.anddev.andengine.entity.IEntity;
@@ -33,7 +34,7 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
  * @author Massimo Gaddini
  *
  */
-public class Maze {
+public class MazeShape {
 
     private static final int WALL_WIDTH     = 2;
 
@@ -45,6 +46,10 @@ public class Maze {
     private int              mPx;
     private int              mPy;
     private MazeCell[][]     mMazeGrid;
+    
+    public MazeShape(){
+        
+    }
 
     public void setMazeSize(int height, int width) {
         this.mWidth = width;

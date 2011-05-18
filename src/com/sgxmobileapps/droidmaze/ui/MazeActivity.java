@@ -19,8 +19,8 @@ import android.hardware.SensorManager;
 
 import com.badlogic.gdx.math.Vector2;
 import com.sgxmobileapps.droidmaze.game.GameProfileManager;
-import com.sgxmobileapps.droidmaze.maze.Maze;
 import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
+import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
 import com.sgxmobileapps.droidmaze.R;
 
 import org.anddev.andengine.entity.scene.Scene;
@@ -46,7 +46,7 @@ public class MazeActivity extends BaseActivity implements IAccelerometerListener
     private PhysicsWorld       mPhysicsWorld;
     private TextureRegion      mMarkerTexture;
 
-    private Maze               mMaze                 = new Maze();
+    private MazeShape               mMaze                 = new MazeShape();
     private GameProfileManager mLevelManager         = new GameProfileManager(); /* TODO */
     private LevelBarShape      mLevelBar; 
     

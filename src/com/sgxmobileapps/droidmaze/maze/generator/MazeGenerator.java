@@ -15,7 +15,6 @@
  */
 package com.sgxmobileapps.droidmaze.maze.generator;
 
-import com.sgxmobileapps.droidmaze.maze.MazeCell;
 
 /**
  * @author Massimo Gaddini

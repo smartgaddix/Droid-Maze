@@ -15,7 +15,6 @@
  */
 package com.sgxmobileapps.droidmaze.maze.generator;
 
-import com.sgxmobileapps.droidmaze.maze.MazeCell;
 
 import java.util.Random;
 import java.util.Vector;

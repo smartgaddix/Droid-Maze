@@ -16,7 +16,6 @@
 
 package com.sgxmobileapps.droidmaze.maze.generator;
 
-import com.sgxmobileapps.droidmaze.maze.MazeCell;
 
 import java.util.ArrayList;
 import java.util.Arrays;

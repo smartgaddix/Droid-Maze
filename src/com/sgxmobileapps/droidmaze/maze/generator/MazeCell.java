@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.  
  */
-package com.sgxmobileapps.droidmaze.maze;
+package com.sgxmobileapps.droidmaze.maze.generator;
 
 /**
  * @author Massimo Gaddini
