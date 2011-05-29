@@ -7,15 +7,21 @@
     <application android:icon="@drawable/solvedmaze" android:label="@string/app_name" android:debuggable="true">
    
         <activity android:name=".ui.MazeActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name" 
+                  android:configChanges="orientation"
+                  android:screenOrientation="portrait">
         </activity>
         
         <activity android:name=".ui.MainMenuActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:configChanges="orientation"
+                  android:screenOrientation="portrait">
         </activity>
         
         <activity android:name=".ui.MainSplashActivity"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                  android:configChanges="orientation"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
