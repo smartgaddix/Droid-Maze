@@ -29,6 +29,6 @@ Android >= 1.6
 See also
 --------
 
-* [andengine](www.andengine.com): Free Android 2D OpenGL Game Engine
+* [andengine](http://www.andengine.com): Free Android 2D OpenGL Game Engine
 * [jamis](http://github.com/jamis): Maze algorithms implementation
 
