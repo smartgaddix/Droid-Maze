@@ -16,8 +16,16 @@
 package com.sgxmobileapps.droidmaze.ui;
 
 
-import com.sgxmobileapps.droidmaze.ui.animator.MultiSlideMenuAnimator;
+import android.util.DisplayMetrics;
 
+import com.sgxmobileapps.droidmaze.ui.animator.MultiSlideMenuAnimator;
+import com.sgxmobileapps.droidmaze.util.ActivityUtils;
+
+import org.anddev.andengine.engine.Engine;
+import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.engine.options.EngineOptions;
+import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
+import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.scene.menu.MenuScene;
@@ -28,6 +36,8 @@ import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
+import org.anddev.andengine.ui.activity.BaseGameActivity;
+import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.modifier.ease.EaseBackOut;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -37,26 +47,46 @@ import javax.microedition.khronos.opengles.GL10;
  * @author Massimo Gaddini
  *
  */
-public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuItemClickListener {
+public class MainMenuActivity extends BaseGameActivity implements MenuScene.IOnMenuItemClickListener {
     
     protected static final int MENU_START = 0;
     protected static final int MENU_QUIT = MENU_START + 1;
 
+    protected Camera camera;
     protected Texture mMenuTexture;
     protected TextureRegion mMenuStartTextureRegion;
     protected TextureRegion mMenuQuitTextureRegion;
 //    protected TextureRegion mBackgroundTextureRegion;
+    
+    /* 
+     * @see org.anddev.andengine.ui.IGameInterface#onLoadEngine()
+     */
+    @Override
+    public Engine onLoadEngine() {
+        Debug.setDebugTag("MainMenuActivity");
+        
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
 
+        int cameraWidth = dm.widthPixels;
+        int cameraHeight = dm.heightPixels;
+        
+        camera = new Camera(0, 0, cameraWidth, cameraHeight);
+        return new Engine(new EngineOptions(true, ScreenOrientation.PORTRAIT,
+                new RatioResolutionPolicy(cameraWidth, cameraHeight), camera));
+    }
 
     /* (non-Javadoc)
      * @see org.anddev.andengine.ui.IGameInterface#onLoadComplete()
      */
+    @Override
     public void onLoadComplete() {
     }
 
     /* (non-Javadoc)
      * @see org.anddev.andengine.ui.IGameInterface#onLoadResources()
      */
+    @Override
     public void onLoadResources() {
         mMenuTexture = new Texture(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         mMenuStartTextureRegion = TextureRegionFactory.createFromAsset(mMenuTexture, this, "gfx/menu_start.png", 0, 0);
@@ -72,8 +102,9 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
     /* (non-Javadoc)
      * @see org.anddev.andengine.ui.IGameInterface#onLoadScene()
      */
+    @Override
     public Scene onLoadScene() {
-        MenuScene menuScene = new MenuScene(getCamera());
+        MenuScene menuScene = new MenuScene(camera);
         
         IMenuItem startMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_START, mMenuStartTextureRegion), (float) 1.2, 1);
         startMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -100,12 +131,14 @@ public class MainMenuActivity extends BaseActivity implements MenuScene.IOnMenuI
     /* (non-Javadoc)
      * @see org.anddev.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener#onMenuItemClicked(org.anddev.andengine.entity.scene.menu.MenuScene, org.anddev.andengine.entity.scene.menu.item.IMenuItem, float, float)
      */
+    @Override
     public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
             float pMenuItemLocalX, float pMenuItemLocalY) {
         
         switch(pMenuItem.getID()) {
         case MENU_START:
-            launch(MazeActivity.class);
+            Debug.i("Pressed Start menu");
+            ActivityUtils.launchActivity(this, MazeActivity.class);
             return true;
         case MENU_QUIT:        
             finish();

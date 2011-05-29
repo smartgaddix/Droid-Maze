@@ -18,6 +18,8 @@ package com.sgxmobileapps.droidmaze.ui.shape;
 import android.content.Context;
 import android.graphics.Color;
 
+import org.anddev.andengine.engine.Engine;
+import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.primitive.BaseRectangle;
@@ -28,6 +30,9 @@ import org.anddev.andengine.opengl.font.FontManager;
 import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.util.Callback;
+
+import javax.microedition.khronos.opengles.GL10;
 
 
 /**
@@ -43,12 +48,19 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
      */
     private int  mElapsedSeconds = 0;
     
+    /**
+     * Text label for elapsed time
+     */
+    private ChangeableText elapsedText;
+    
   
     /**
      * Font used for text in the level bar
      */
     private Font mDroidFont;
 
+    
+    
     /**
      * Creates a LevelBarShape class
      * @param pX 
@@ -76,23 +88,46 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
         fontManager.loadFont(mDroidFont);
     }
 
-    /* 
-     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#initShape()
+    /* (non-Javadoc)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#init(boolean, org.anddev.andengine.util.Callback, org.anddev.andengine.util.Callback)
      */
-    public void initShape() {
+    public void init(boolean visible, Callback<Boolean> callback, Callback<Exception> exceptionCallback) {
+        setVisible(visible);
+        
         /* transparent white */
         setColor(1.0f, 1.0f, 1.0f, 0.0f);
         
         /* label for elapsed time */
-        final ChangeableText elapsedText = new ChangeableText(0, (getHeightScaled() - mDroidFont.getLineHeight())/2, mDroidFont, "00:00", "XXXXX".length());
+        elapsedText = new ChangeableText(0, (getHeightScaled() - mDroidFont.getLineHeight())/2, mDroidFont, "00:00", "XXXXX".length());
         attachChild(elapsedText);
         
+        if (callback != null)
+            callback.onCallback(true);
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#enable(org.anddev.andengine.engine.Engine)
+     */
+    public void enable(Engine engine) {
+        setVisible(true);
+        
         /* timer handler for updating the elapsed time label */
-        registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
+        engine.registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
             public void onTimePassed(final TimerHandler pTimerHandler) {
                 mElapsedSeconds += (int)pTimerHandler.getTimerSeconds();
                 elapsedText.setText(String.format("%02d:%02d", mElapsedSeconds/60, mElapsedSeconds%60));
             }
         }));
     }
+
+
+    /* (non-Javadoc)
+     * @see org.anddev.andengine.entity.shape.Shape#doDraw(javax.microedition.khronos.opengles.GL10, org.anddev.andengine.engine.camera.Camera)
+     */
+    @Override
+    protected void doDraw(GL10 pGL, Camera pCamera) {
+    }
+    
+    
 }

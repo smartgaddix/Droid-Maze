@@ -21,6 +21,7 @@ import com.sgxmobileapps.droidmaze.maze.generator.KruskalMazeGenerator;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
 /**
+ * TODO
  * @author Massimo Gaddini
  * 
  */
@@ -39,8 +40,8 @@ public class GameProfileManager {
         mNickname = "Smartgaddix";
         mLevel = 1;
         mGenerator = new IterativeBacktrackingMazeGenerator();
-        mMazeHeight = 50;
-        mMazeWidth = 50;
+        mMazeHeight = 10;
+        mMazeWidth = 10;
         mAccelerationFactor = (float) 0.5;
     }
 

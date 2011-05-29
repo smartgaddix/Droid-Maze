@@ -15,100 +15,121 @@
  */
 package com.sgxmobileapps.droidmaze.ui;
 
-import android.hardware.SensorManager;
+import android.util.DisplayMetrics;
 
-import com.badlogic.gdx.math.Vector2;
 import com.sgxmobileapps.droidmaze.game.GameProfileManager;
 import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
 import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
-import com.sgxmobileapps.droidmaze.R;
 
+import org.anddev.andengine.engine.Engine;
+import org.anddev.andengine.engine.camera.Camera;
+import org.anddev.andengine.engine.options.EngineOptions;
+import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
+import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
-import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
-import org.anddev.andengine.opengl.texture.Texture;
-import org.anddev.andengine.opengl.texture.TextureOptions;
-import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
-import org.anddev.andengine.sensor.accelerometer.AccelerometerData;
-import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
+import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Callback;
-
-import java.util.concurrent.Callable;
 
 
 /**
+ * Main game activity
+ * 
  * @author Massimo Gaddini
  *
  */
-public class MazeActivity extends BaseActivity implements IAccelerometerListener {
+public class MazeActivity extends BaseGameActivity {
+    private static final float SCORE_BAR_HEIGHT_PERC = 0.1f;
+    private static final float AD_BAR_HEIGHT_PERC = 0.1f;
 
-    private PhysicsWorld       mPhysicsWorld;
-    private TextureRegion      mMarkerTexture;
-
-    private MazeShape               mMaze                 = new MazeShape();
-    private GameProfileManager mLevelManager         = new GameProfileManager(); /* TODO */
-    private LevelBarShape      mLevelBar; 
+    private int                mCameraWidth;
+    private int                mCameraHeight;
+    private int                mScoreBarWidth;
+    private int                mScoreBarHeight;
+    private int                mAdBarWidth;
+    private int                mAdBarHeight;
+    private int                mMazeAreaWidth;
+    private int                mMazeAreaHeight;
     
-
-    public void onLoadResources() {
-        
-        mLevelBar = new LevelBarShape(0, 0, getScoreBarWidth(), getScoreBarHeight());
-        mLevelBar.loadResources(mEngine.getTextureManager(), mEngine.getFontManager(), this);
-        
-        /* Texture */
-        Texture texture = new Texture(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        
-        /* TextureRegion */
-        mMarkerTexture = TextureRegionFactory.createFromAsset(texture, this, "gfx/face_circle.png", 0, 0); // 32x32
-        
-        mEngine.getTextureManager().loadTexture(texture);
-
-        enableAccelerometerSensor(this);
+    private MazeShape mMaze;
+    private GameProfileManager mLevelManager = new GameProfileManager(); /* TODO */
+    private LevelBarShape mLevelBar; 
+    
+    /* (non-Javadoc)
+     * @see org.anddev.andengine.ui.IGameInterface#onLoadEngine()
+     */
+    @Override
+    public Engine onLoadEngine() {
+        computeDimension();
+        Camera camera = new Camera(0, 0, mCameraWidth, mCameraHeight);
+        return new Engine(new EngineOptions(true, ScreenOrientation.PORTRAIT,
+                new RatioResolutionPolicy(mCameraWidth, mCameraHeight), camera));
     }
 
+    
+    /* (non-Javadoc)
+     * @see org.anddev.andengine.ui.IGameInterface#onLoadResources()
+     */
+    @Override
+    public void onLoadResources() {
+        mLevelBar = new LevelBarShape(0, 0, mScoreBarWidth, mScoreBarHeight);
+        mLevelBar.loadResources(getEngine().getTextureManager(), getEngine().getFontManager(), this);
+        
+        mMaze = new MazeShape(0, mScoreBarHeight, 
+        		mMazeAreaWidth, mMazeAreaHeight, 
+        		mLevelManager.getMazeHeight(), mLevelManager.getMazeWidth(), 
+        		mLevelManager.getGenerator(), this);
+        mMaze.loadResources(getEngine().getTextureManager(), getEngine().getFontManager(), this);
+    }
+
+    /* 
+     * @see org.anddev.andengine.ui.IGameInterface#onLoadScene()
+     */
+    @Override
     public Scene onLoadScene() {
 
         final Scene scene = new Scene(2);
         scene.setBackground(new ColorBackground((float) ( 51.0 / 255.0 ),
                 (float) ( 189.0 / 255.0 ), (float) ( 200.0 / 255.0 )));
 
-        mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
-        scene.registerUpdateHandler(mPhysicsWorld);
-        
-        mLevelBar.initShape();
-        scene.getLastChild().attachChild(mLevelBar);
+        mLevelBar.init(false, null, null);
+        scene.getChild(0).attachChild(mLevelBar);
 
-        this.doAsync(R.string.dialog_loading_title, R.string.dialog_loading_message,
-                new Callable<Void>() {
+        mMaze.init(false, 
+                new Callback<Boolean>(){
 
-                    public Void call() throws Exception {
-                        mMaze.setMazeGenerator(mLevelManager.getGenerator());
-                        mMaze.setMazeSize(mLevelManager.getMazeHeight(), mLevelManager
-                                .getMazeWidth());
-                        mMaze.generateMaze();
-                        return null;
+                    public void onCallback(Boolean pCallbackValue) {
+                        mLevelBar.enable(getEngine());
+                        mMaze.enable(getEngine());
                     }
-
-                }, new Callback<Void>() {
-
-                    public void onCallback(Void pCallbackValue) {
-                        mMaze.drawMaze(0, getScoreBarHeight(), getMazeAreaHeight(), getMazeAreaWidth(),
-                                getEngine().getScene().getChild(0), mPhysicsWorld);
-                        mMaze.addMarker(mMarkerTexture, getEngine().getScene().getChild(1),
-                                mPhysicsWorld);
-                    }
-                });
+            
+                }, null);
+        scene.getLastChild().attachChild(mMaze);
 
         return scene;
     }
-
-    public void onAccelerometerChanged(final AccelerometerData pAccelerometerData) {
-        mPhysicsWorld.setGravity(new Vector2(-pAccelerometerData.getX(), pAccelerometerData.getY()));
-    }
-
+    
+    /* 
+     * @see org.anddev.andengine.ui.IGameInterface#onLoadComplete()
+     */
+    @Override
     public void onLoadComplete() {
-        // TODO Auto-generated method stub
+    }
+    
+    private void computeDimension() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        mCameraHeight = dm.heightPixels;
+        mCameraWidth = dm.widthPixels;
+
+        mScoreBarHeight = (int) ( mCameraHeight * SCORE_BAR_HEIGHT_PERC );
+        mScoreBarWidth = mCameraWidth;
         
+        mAdBarHeight = (int) ( mCameraHeight * AD_BAR_HEIGHT_PERC );
+        mAdBarWidth = mCameraWidth;
+
+        mMazeAreaHeight = mCameraHeight - mScoreBarHeight - mAdBarHeight;
+        mMazeAreaWidth = mCameraWidth;
     }
 }
