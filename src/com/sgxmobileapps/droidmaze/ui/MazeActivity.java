@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 
 import com.sgxmobileapps.droidmaze.game.GameProfileManager;
 import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
+import com.sgxmobileapps.droidmaze.ui.shape.LoadingShape;
 import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
 
 import org.anddev.andengine.engine.Engine;
@@ -51,9 +52,10 @@ public class MazeActivity extends BaseGameActivity {
     private int                mMazeAreaWidth;
     private int                mMazeAreaHeight;
     
-    private MazeShape mMaze;
     private GameProfileManager mLevelManager = new GameProfileManager(); /* TODO */
     private LevelBarShape mLevelBar; 
+    private MazeShape mMaze;
+    private LoadingShape mLoading;
     
     /* (non-Javadoc)
      * @see org.anddev.andengine.ui.IGameInterface#onLoadEngine()
@@ -80,6 +82,9 @@ public class MazeActivity extends BaseGameActivity {
         		mLevelManager.getMazeHeight(), mLevelManager.getMazeWidth(), 
         		mLevelManager.getGenerator(), this);
         mMaze.loadResources(getEngine().getTextureManager(), getEngine().getFontManager(), this);
+        
+        mLoading = new LoadingShape(0, 0, mCameraWidth, mCameraHeight);
+        mLoading.loadResources(getEngine().getTextureManager(), getEngine().getFontManager(), this);
     }
 
     /* 
@@ -93,18 +98,23 @@ public class MazeActivity extends BaseGameActivity {
                 (float) ( 189.0 / 255.0 ), (float) ( 200.0 / 255.0 )));
 
         mLevelBar.init(false, null, null);
-        scene.getChild(0).attachChild(mLevelBar);
+        scene.getLastChild().attachChild(mLevelBar);
 
         mMaze.init(false, 
                 new Callback<Boolean>(){
 
                     public void onCallback(Boolean pCallbackValue) {
-                        mLevelBar.enable(getEngine());
+                        mLoading.setVisible(false);
+                        scene.getFirstChild().detachChild(mLoading);
+                    	mLevelBar.enable(getEngine());
                         mMaze.enable(getEngine());
                     }
             
                 }, null);
         scene.getLastChild().attachChild(mMaze);
+        
+        mLoading.init(true, null, null);
+        scene.getFirstChild().attachChild(mLoading);
 
         return scene;
     }
@@ -114,12 +124,13 @@ public class MazeActivity extends BaseGameActivity {
      */
     @Override
     public void onLoadComplete() {
+        
     }
     
     private void computeDimension() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-
+ 
         mCameraHeight = dm.heightPixels;
         mCameraWidth = dm.widthPixels;
 

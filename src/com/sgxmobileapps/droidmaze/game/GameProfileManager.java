@@ -40,8 +40,8 @@ public class GameProfileManager {
         mNickname = "Smartgaddix";
         mLevel = 1;
         mGenerator = new IterativeBacktrackingMazeGenerator();
-        mMazeHeight = 10;
-        mMazeWidth = 10;
+        mMazeHeight = 40;
+        mMazeWidth = 40;
         mAccelerationFactor = (float) 0.5;
     }
 
