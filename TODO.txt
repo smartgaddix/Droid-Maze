@@ -1,4 +1,5 @@
 - code comments
+- Constants class for resources path etc
 - marker track drawing
 - maze exit 
 - level manager
@@ -6,6 +7,7 @@
 - game time (total and per maze)
 - start splash screen
 - maze (level) splash screen (loading)
+
 - sqllite tool
 - control option: gravity or joypad
 
