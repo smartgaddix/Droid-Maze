@@ -17,7 +17,7 @@
 package com.sgxmobileapps.droidmaze.game;
 
 import com.sgxmobileapps.droidmaze.maze.generator.IterativeBacktrackingMazeGenerator;
-import com.sgxmobileapps.droidmaze.maze.generator.KruskalMazeGenerator;
+//import com.sgxmobileapps.droidmaze.maze.generator.KruskalMazeGenerator;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
 /**

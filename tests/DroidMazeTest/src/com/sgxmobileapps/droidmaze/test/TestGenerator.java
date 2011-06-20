@@ -1,8 +1,8 @@
 package com.sgxmobileapps.droidmaze.test;
 
-import com.sgxmobileapps.droidmaze.maze.generator.IterativeBacktrackingMazeGenerator;
-import com.sgxmobileapps.droidmaze.maze.generator.PrimMazeGenerator;
-import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
+//import com.sgxmobileapps.droidmaze.maze.generator.IterativeBacktrackingMazeGenerator;
+//import com.sgxmobileapps.droidmaze.maze.generator.PrimMazeGenerator;
+//import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
 
 import android.test.AndroidTestCase;
 
