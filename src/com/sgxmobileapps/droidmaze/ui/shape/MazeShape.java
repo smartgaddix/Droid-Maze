@@ -35,12 +35,13 @@ import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.extension.physics.box2d.PhysicsConnector;
 import org.anddev.andengine.extension.physics.box2d.PhysicsFactory;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
+import org.anddev.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.anddev.andengine.opengl.font.FontManager;
-import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.sensor.accelerometer.AccelerometerData;
 import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 import org.anddev.andengine.util.Callback;
@@ -141,10 +142,10 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
      */
     public void loadResources(TextureManager textureManager, FontManager fontManager, Context ctx) {
         /* Texture */
-        Texture texture = new Texture(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas texture = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
         /* TextureRegion */
-        mMarkerTexture = TextureRegionFactory.createFromAsset(texture, ctx, "gfx/face_circle.png", 0, 0); // 32x32
+        mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture, ctx, "gfx/face_circle.png", 0, 0); // 32x32
         
         textureManager.loadTexture(texture);
     }
@@ -155,6 +156,8 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
     public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback) {
         setVisible(visible);
         mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+        
+        //mPhysicsWorld = new PhysicsWorld(new Vector2(SensorManager.GRAVITY_EARTH, 0), false);
         
         new AsyncTask<Void, Void, Boolean>() {
             private Exception mException = null;
@@ -219,7 +222,11 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
      * @see org.anddev.andengine.sensor.accelerometer.IAccelerometerListener#onAccelerometerChanged(org.anddev.andengine.sensor.accelerometer.AccelerometerData)
      */
     public void onAccelerometerChanged(AccelerometerData pAccelerometerData) {
-        mPhysicsWorld.setGravity(new Vector2(-pAccelerometerData.getX(), pAccelerometerData.getY()));
+        //mPhysicsWorld.setGravity(new Vector2(-pAccelerometerData.getX(), pAccelerometerData.getY()));
+        
+        Vector2 gravity = Vector2Pool.obtain(pAccelerometerData.getX(), pAccelerometerData.getY());
+        mPhysicsWorld.setGravity(gravity);
+        Vector2Pool.recycle(gravity);
     }
 
     protected void addMarker() {
@@ -248,25 +255,7 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
         mStepX = ( getWidthScaled() - ( mMazeWidth * WALL_WIDTH ) - WALL_WIDTH ) / (float) mMazeWidth;
         mStepY = ( getHeightScaled() - ( mMazeHeight * WALL_WIDTH ) - WALL_WIDTH ) / (float) mMazeHeight;
 
-        FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0, 0);
-
-        /* box */
-        Shape ground = new Rectangle(0, ( mStepY + WALL_WIDTH ) * mMazeHeight, 
-                WALL_WIDTH + ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH);
-        Shape roof = new Rectangle(0, 0, WALL_WIDTH + ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH);
-        Shape left = new Rectangle(0, WALL_WIDTH, WALL_WIDTH, ( mStepY + WALL_WIDTH ) * mMazeHeight - WALL_WIDTH);
-        Shape right = new Rectangle( ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH, WALL_WIDTH, 
-                ( mStepY + WALL_WIDTH ) * mMazeHeight - WALL_WIDTH);
-
-        attachChild(ground);
-        attachChild(roof);
-        attachChild(left);
-        attachChild(right);
-
-        PhysicsFactory.createBoxBody(mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
+        FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(1, 0, 0);
 
         int start = -1;
         int end = -1;
@@ -342,6 +331,24 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
                 attachChild(wallV);
             }
         }
+        
+        /* box */
+        Shape ground = new Rectangle(0, ( mStepY + WALL_WIDTH ) * mMazeHeight, 
+                WALL_WIDTH + ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH);
+        Shape roof = new Rectangle(0, 0, WALL_WIDTH + ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH);
+        Shape left = new Rectangle(0, WALL_WIDTH, WALL_WIDTH, ( mStepY + WALL_WIDTH ) * mMazeHeight - WALL_WIDTH);
+        Shape right = new Rectangle( ( mStepX + WALL_WIDTH ) * mMazeWidth, WALL_WIDTH, WALL_WIDTH, 
+                ( mStepY + WALL_WIDTH ) * mMazeHeight - WALL_WIDTH);
+
+        PhysicsFactory.createBoxBody(mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
+        PhysicsFactory.createBoxBody(mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
+        PhysicsFactory.createBoxBody(mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
+        PhysicsFactory.createBoxBody(mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
+        
+        attachChild(ground);
+        attachChild(roof);
+        attachChild(left);
+        attachChild(right);
     }
 
     /**

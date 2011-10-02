@@ -27,9 +27,9 @@ import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.font.FontFactory;
 import org.anddev.andengine.opengl.font.FontManager;
-import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.util.Callback;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -78,7 +78,7 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
      */
     public void loadResources(TextureManager textureManager, FontManager fontManager, Context ctx) {
         /* Texture */
-        Texture droidFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas droidFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
  
         /* Font */
         FontFactory.setAssetBasePath("font/");

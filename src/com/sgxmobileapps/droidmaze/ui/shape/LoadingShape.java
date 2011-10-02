@@ -24,13 +24,14 @@ import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.entity.primitive.BaseRectangle;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.font.FontManager;
-import org.anddev.andengine.opengl.texture.Texture;
-import org.anddev.andengine.opengl.texture.TextureFactory;
 import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasFactory;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.source.AssetBitmapTextureAtlasSource;
+import org.anddev.andengine.opengl.texture.bitmap.BitmapTexture.BitmapTextureFormat;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
-import org.anddev.andengine.opengl.texture.source.AssetTextureSource;
 import org.anddev.andengine.util.Callback;
 
 
@@ -96,11 +97,11 @@ public class LoadingShape extends BaseRectangle implements ComplexShape {
      */
     @Override
     public void loadResources(TextureManager textureManager, FontManager fontManager, Context ctx) {
-        AssetTextureSource backgroundTextureSource = new AssetTextureSource(ctx, "gfx/splash_screen.png");
-        Texture backgroundTexture = TextureFactory.createForTextureSourceSize(backgroundTextureSource, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mBackgroundTextureRegion = TextureRegionFactory.createFromSource(backgroundTexture, backgroundTextureSource, 0, 0);
+        AssetBitmapTextureAtlasSource backgroundTextureAtlasSource = new AssetBitmapTextureAtlasSource(ctx, "gfx/splash_screen.png");
+        BitmapTextureAtlas backgroundTextureAtlas = BitmapTextureAtlasFactory.createForTextureAtlasSourceSize(BitmapTextureFormat.RGBA_8888, backgroundTextureAtlasSource, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mBackgroundTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromSource(backgroundTextureAtlas, backgroundTextureAtlasSource, 0, 0);
 
-        textureManager.loadTexture(backgroundTexture);
+        textureManager.loadTexture(backgroundTextureAtlas);
     }
     
     /* (non-Javadoc)

@@ -93,28 +93,28 @@ public class MazeActivity extends BaseGameActivity {
     @Override
     public Scene onLoadScene() {
 
-        final Scene scene = new Scene(2);
+        final Scene scene = new Scene();
         scene.setBackground(new ColorBackground((float) ( 51.0 / 255.0 ),
                 (float) ( 189.0 / 255.0 ), (float) ( 200.0 / 255.0 )));
 
         mLevelBar.init(false, null, null);
-        scene.getLastChild().attachChild(mLevelBar);
+        scene.attachChild(mLevelBar, 0);
 
         mMaze.init(false, 
                 new Callback<Boolean>(){
 
                     public void onCallback(Boolean pCallbackValue) {
                         mLoading.setVisible(false);
-                        scene.getFirstChild().detachChild(mLoading);
+                        scene.detachChild(mLoading);
                     	mLevelBar.enable(getEngine());
                         mMaze.enable(getEngine());
                     }
             
                 }, null);
-        scene.getLastChild().attachChild(mMaze);
+        scene.attachChild(mMaze, 1);
         
         mLoading.init(true, null, null);
-        scene.getFirstChild().attachChild(mLoading);
+        scene.attachChild(mLoading, 2);
 
         return scene;
     }

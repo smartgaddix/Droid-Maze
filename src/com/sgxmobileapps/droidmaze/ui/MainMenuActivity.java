@@ -32,10 +32,10 @@ import org.anddev.andengine.entity.scene.menu.MenuScene;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
 import org.anddev.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.anddev.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
-import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.modifier.ease.EaseBackOut;
@@ -53,7 +53,7 @@ public class MainMenuActivity extends BaseGameActivity implements MenuScene.IOnM
     protected static final int MENU_QUIT = MENU_START + 1;
 
     protected Camera camera;
-    protected Texture mMenuTexture;
+    protected BitmapTextureAtlas mMenuTexture;
     protected TextureRegion mMenuStartTextureRegion;
     protected TextureRegion mMenuQuitTextureRegion;
 //    protected TextureRegion mBackgroundTextureRegion;
@@ -88,9 +88,9 @@ public class MainMenuActivity extends BaseGameActivity implements MenuScene.IOnM
      */
     @Override
     public void onLoadResources() {
-        mMenuTexture = new Texture(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mMenuStartTextureRegion = TextureRegionFactory.createFromAsset(mMenuTexture, this, "gfx/menu_start.png", 0, 0);
-        mMenuQuitTextureRegion = TextureRegionFactory.createFromAsset(mMenuTexture, this, "gfx/menu_exit.png", 0, 50);
+        mMenuTexture = new BitmapTextureAtlas(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mMenuStartTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMenuTexture, this, "gfx/menu_start.png", 0, 0);
+        mMenuQuitTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(mMenuTexture, this, "gfx/menu_exit.png", 0, 50);
         mEngine.getTextureManager().loadTexture(mMenuTexture);
         
 //        ITextureSource textureSource = new AssetTextureSource(this, "gfx/menu_background.jpg");

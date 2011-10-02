@@ -22,8 +22,8 @@ import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.IResolutionPolicy;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.opengl.texture.source.AssetTextureSource;
-import org.anddev.andengine.opengl.texture.source.ITextureSource;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.source.AssetBitmapTextureAtlasSource;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
 import org.anddev.andengine.ui.activity.BaseSplashActivity;
 
 
@@ -65,8 +65,8 @@ public class MainSplashActivity extends BaseSplashActivity {
      * @see org.anddev.andengine.ui.activity.BaseSplashActivity#onGetSplashTextureSource()
      */
     @Override
-    protected ITextureSource onGetSplashTextureSource() {
-        return new AssetTextureSource(this, "gfx/splash_screen.png");
+    protected IBitmapTextureAtlasSource onGetSplashTextureAtlasSource() {
+        return new AssetBitmapTextureAtlasSource(this, "gfx/splash_screen.png");
     }
 
     /* (non-Javadoc)

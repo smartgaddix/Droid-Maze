@@ -35,7 +35,7 @@ import static com.sgxmobileapps.droidmaze.datastore.DroidMazeMetadata.GameProfil
  */
 public abstract class Datastore{
     
-    private static final String TAG = "DroidMazeDatastore";
+    private static final String TAG = "Datastore";
     
     private static class DbHelper extends SQLiteOpenHelper {
         
