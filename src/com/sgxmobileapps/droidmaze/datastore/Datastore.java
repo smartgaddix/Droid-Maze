@@ -31,7 +31,6 @@ import static com.sgxmobileapps.droidmaze.datastore.DroidMazeMetadata.GameProfil
  * This class contains utility methods and classes for the application datastore.
  *  
  * @author Massimo Gaddini
- * Jun 11, 2011
  */
 public abstract class Datastore{
     

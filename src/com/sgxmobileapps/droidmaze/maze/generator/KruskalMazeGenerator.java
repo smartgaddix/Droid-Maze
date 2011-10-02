@@ -25,7 +25,6 @@ import java.util.TreeSet;
 
 /**
  * @author Massimo Gaddini
- *
  */
 public class KruskalMazeGenerator implements MazeGenerator {
     

@@ -23,7 +23,6 @@ import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 /**
  * TODO
  * @author Massimo Gaddini
- * 
  */
 public class GameProfileManager {
 

@@ -18,7 +18,6 @@ package com.sgxmobileapps.droidmaze.maze.generator;
 
 /**
  * @author Massimo Gaddini
- *
  */
 public interface MazeGenerator {
 

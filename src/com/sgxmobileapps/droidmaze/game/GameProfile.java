@@ -20,7 +20,6 @@ package com.sgxmobileapps.droidmaze.game;
  * This class contains information about current game profile.
  * 
  * @author Massimo Gaddini
- * Jun 13, 2011
  */
 public class GameProfile {
     

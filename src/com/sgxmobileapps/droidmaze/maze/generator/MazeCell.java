@@ -17,7 +17,6 @@ package com.sgxmobileapps.droidmaze.maze.generator;
 
 /**
  * @author Massimo Gaddini
- * 
  */
 public abstract class MazeCell {
 

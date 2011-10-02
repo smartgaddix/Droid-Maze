@@ -23,7 +23,6 @@ import android.provider.BaseColumns;
  * table names and column names.
  * 
  * @author Massimo Gaddini
- * Jun 11, 2011
  */
 public class DroidMazeMetadata {
     static final String  DATABASE_NAME       =   "droidmaze.db";
