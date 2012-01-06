@@ -15,16 +15,25 @@
  */
 package com.sgxmobileapps.droidmaze.game;
 
+import com.sgxmobileapps.androidsqlhelper.annotation.PersistentEntity;
+import com.sgxmobileapps.androidsqlhelper.annotation.PersistentField;
+
 
 /**
  * This class contains information about current game profile.
  * 
  * @author Massimo Gaddini
  */
+@PersistentEntity(fieldPrefix="m", unique={"ProfileId"})
 public class GameProfile {
     
+    @PersistentField(unique=true)
     private String mProfileId;
+    
+    @PersistentField
     private int mLevel;
+    
+    @PersistentField
     private long mTotalTime;
     
     /**
