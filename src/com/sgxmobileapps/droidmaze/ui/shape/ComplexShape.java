@@ -48,8 +48,9 @@ public interface ComplexShape {
      * @param visible Initial visibility of the shape
      * @param callback The callback to be called whehn finished. The argument is a boolean indicating the result of initialization
      * @param exceptionCallback The callback to be call if exception occurred. The argument is the exception.
+     * @param ctx the context
      */
-    public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback);
+    public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback, Context ctx);
     
     /**
      * Enables update handler and so on

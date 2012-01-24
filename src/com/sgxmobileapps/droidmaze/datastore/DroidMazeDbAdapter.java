@@ -43,13 +43,14 @@ public class DroidMazeDbAdapter {
      * 
      */
     private SQLiteDatabase mDb;
-    private final static String SQL_GAMEPROFILE_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "+ DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME +" ("+
-    DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
-    DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL +" TEXT NOT NULL UNIQUE, "+
-    DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_COL +" INTEGER, "+
-    DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_COL +" INTEGER"+", "+
-    "UNIQUE ("+ DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL +")"+" );";
-    private final static String SQL_GAMEPROFILE_DROP_TABLE = "DROP TABLE IF EXISTS "+ DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME +";";
+    private final static String SQL_GAMEPLAYERPROFILE_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "+ DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME +" ("+
+    DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL +" INTEGER PRIMARY KEY AUTOINCREMENT, "+
+    DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL +" TEXT NOT NULL, "+
+    DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_COL +" INTEGER, "+
+    DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_COL +" INTEGER, "+
+    DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_COL +" INTEGER"+", "+
+    "UNIQUE ("+ DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL +")"+" );";
+    private final static String SQL_GAMEPLAYERPROFILE_DROP_TABLE = "DROP TABLE IF EXISTS "+ DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME +";";
 
     /**
      * Initializes the data store
@@ -102,111 +103,113 @@ public class DroidMazeDbAdapter {
         return false;
     }
 
-    private ContentValues getContentValues(com.sgxmobileapps.droidmaze.game.GameProfile gameProfile) {
+    private ContentValues getContentValues(com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL, gameProfile.getProfileId());
-        contentValues.put(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_COL, gameProfile.getLevel());
-        contentValues.put(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_COL, gameProfile.getTotalTime());
+        contentValues.put(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL, gamePlayerProfile.getProfileId());
+        contentValues.put(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_COL, gamePlayerProfile.getLevel());
+        contentValues.put(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_COL, gamePlayerProfile.getTotalTime());
+        contentValues.put(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_COL, gamePlayerProfile.isCurrent());
         return contentValues;
     }
 
-    private com.sgxmobileapps.droidmaze.game.GameProfile fillFromCursorGameProfile(Cursor cursor) {
-        com.sgxmobileapps.droidmaze.game.GameProfile gameProfile = new com.sgxmobileapps.droidmaze.game.GameProfile();
-        gameProfile.setProfileId(cursor.getString(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_IDX));
-        gameProfile.setLevel(((int) cursor.getLong(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_IDX)));
-        gameProfile.setTotalTime(cursor.getLong(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_IDX));
-        return gameProfile;
+    private com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile fillFromCursorGamePlayerProfile(Cursor cursor) {
+        com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile = new com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile();
+        gamePlayerProfile.setProfileId(cursor.getString(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_IDX));
+        gamePlayerProfile.setLevel(((int) cursor.getLong(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_IDX)));
+        gamePlayerProfile.setTotalTime(cursor.getLong(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_IDX));
+        gamePlayerProfile.setCurrent((cursor.getLong(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_IDX)> 0));
+        return gamePlayerProfile;
     }
 
     /**
-     * Inserts a GameProfile to database
+     * Inserts a GamePlayerProfile to database
      * 
-     * @param gameProfile
-     *     The GameProfile to insert
+     * @param gamePlayerProfile
+     *     The GamePlayerProfile to insert
      * @return
      *     the row ID of the newly inserted row, or -1 if an error occurred
      */
-    public long addGameProfile(com.sgxmobileapps.droidmaze.game.GameProfile gameProfile) {
-        return mDb.insert(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, null, getContentValues(gameProfile));
+    public long addGamePlayerProfile(com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile) {
+        return mDb.insert(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, null, getContentValues(gamePlayerProfile));
     }
 
     /**
-     * Updates a GameProfile in database
+     * Updates a GamePlayerProfile in database
      * 
      * @param id
-     *     The id of the GameProfile to update
-     * @param gameProfile
-     *     The GameProfile to update
+     *     The id of the GamePlayerProfile to update
+     * @param gamePlayerProfile
+     *     The GamePlayerProfile to update
      * @return
      *     the number of rows affected (1 or 0)
      */
-    public long updateGameProfile(long id, com.sgxmobileapps.droidmaze.game.GameProfile gameProfile) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL +" = "+ id;
-        return mDb.update(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, getContentValues(gameProfile), where, null);
+    public long updateGamePlayerProfile(long id, com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL +" = "+ id;
+        return mDb.update(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, getContentValues(gamePlayerProfile), where, null);
     }
 
     /**
-     * Updates a GameProfile in database
+     * Updates a GamePlayerProfile in database
      * 
-     * @param gameProfile
-     *     The GameProfile to update
+     * @param gamePlayerProfile
+     *     The GamePlayerProfile to update
      * @return
      *     the number of rows affected (1 or 0)
      */
-    public long updateGameProfile(com.sgxmobileapps.droidmaze.game.GameProfile gameProfile) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL +" = '"+ gameProfile.getProfileId()+"'";
-        return mDb.update(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, getContentValues(gameProfile), where, null);
+    public long updateGamePlayerProfile(com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL +" = '"+ gamePlayerProfile.getProfileId()+"'";
+        return mDb.update(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, getContentValues(gamePlayerProfile), where, null);
     }
 
     /**
-     * Deletes a GameProfile from database
+     * Deletes a GamePlayerProfile from database
      * 
      * @param id
-     *     The id of the GameProfile to delete
+     *     The id of the GamePlayerProfile to delete
      * @return
      *     the number of rows affected (1 or 0)
      */
-    public long deleteGameProfile(long id) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL +" = "+ id;
-        return mDb.delete(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, where, null);
+    public long deleteGamePlayerProfile(long id) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL +" = "+ id;
+        return mDb.delete(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, where, null);
     }
 
     /**
-     * Deletes a GameProfile from database
+     * Deletes a GamePlayerProfile from database
      * 
-     * @param gameProfile
-     *     The GameProfile to delete
+     * @param gamePlayerProfile
+     *     The GamePlayerProfile to delete
      * @return
      *     the number of rows affected (1 or 0)
      */
-    public long deleteGameProfile(com.sgxmobileapps.droidmaze.game.GameProfile gameProfile) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL +" = '"+ gameProfile.getProfileId()+"'";
-        return mDb.delete(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, where, null);
+    public long deleteGamePlayerProfile(com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile gamePlayerProfile) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL +" = '"+ gamePlayerProfile.getProfileId()+"'";
+        return mDb.delete(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, where, null);
     }
 
     /**
-     * Deletes all GameProfile from database
+     * Deletes all GamePlayerProfile from database
      * 
      * @return
      *     the number of rows deleted
      */
-    public long deleteAllGameProfile() {
-        return mDb.delete(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, "1", null);
+    public long deleteAllGamePlayerProfile() {
+        return mDb.delete(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, "1", null);
     }
 
     /**
-     * Reads a GameProfile from database with given id
+     * Reads a GamePlayerProfile from database with given id
      * 
      * @param id
-     *     The id of the GameProfile to read
+     *     The id of the GamePlayerProfile to read
      * @return
      *     the entity read or null if one entity with the specified id doesn't exist
      */
-    public com.sgxmobileapps.droidmaze.game.GameProfile getGameProfile(long id) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL +" = "+ id;
-        String[] cols = new String[] {DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_COL };
+    public com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile getGamePlayerProfile(long id) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL +" = "+ id;
+        String[] cols = new String[] {DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_COL };
         Cursor cursor;
-        cursor = mDb.query(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, cols, where, null, null, null, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_DEFAULT_ORDER);
+        cursor = mDb.query(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, cols, where, null, null, null, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_DEFAULT_ORDER);
         if (cursor == null) {
             return null;
         }
@@ -214,25 +217,25 @@ public class DroidMazeDbAdapter {
             cursor.close();
             return null;
         }
-        com.sgxmobileapps.droidmaze.game.GameProfile res;
-        res = fillFromCursorGameProfile(cursor);
+        com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile res;
+        res = fillFromCursorGamePlayerProfile(cursor);
         cursor.close();
         return res;
     }
 
     /**
-     * Reads a GameProfile from database with given key fields
+     * Reads a GamePlayerProfile from database with given key fields
      * 
      * @param profileId
      *     The ProfileId field
      * @return
      *     the entity read or null if one entity with the specified key doesn't exist
      */
-    public com.sgxmobileapps.droidmaze.game.GameProfile getGameProfile(String profileId) {
-        String where = DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL +" = '"+ profileId +"'";
-        String[] cols = new String[] {DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_COL };
+    public com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile getGamePlayerProfile(String profileId) {
+        String where = DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL +" = '"+ profileId +"'";
+        String[] cols = new String[] {DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_COL };
         Cursor cursor;
-        cursor = mDb.query(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, cols, where, null, null, null, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_DEFAULT_ORDER);
+        cursor = mDb.query(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, cols, where, null, null, null, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_DEFAULT_ORDER);
         if (cursor == null) {
             return null;
         }
@@ -240,38 +243,38 @@ public class DroidMazeDbAdapter {
             cursor.close();
             return null;
         }
-        com.sgxmobileapps.droidmaze.game.GameProfile res;
-        res = fillFromCursorGameProfile(cursor);
+        com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile res;
+        res = fillFromCursorGamePlayerProfile(cursor);
         cursor.close();
         return res;
     }
 
     /**
-     * Returns a cursor for GameProfile
+     * Returns a cursor for GamePlayerProfile
      * 
      * @return
      *     the cursor
      */
-    public Cursor getCursorGameProfile() {
-        String[] cols = new String[] {DroidMazeDbMetadata.GameProfile.GAMEPROFILE_ID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_LEVEL_COL, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TOTALTIME_COL };
-        return mDb.query(DroidMazeDbMetadata.GameProfile.GAMEPROFILE_TABLE_NAME, cols, null, null, null, null, DroidMazeDbMetadata.GameProfile.GAMEPROFILE_DEFAULT_ORDER);
+    public Cursor getCursorGamePlayerProfile() {
+        String[] cols = new String[] {DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_ID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_PROFILEID_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_LEVEL_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TOTALTIME_COL, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_CURRENT_COL };
+        return mDb.query(DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_TABLE_NAME, cols, null, null, null, null, DroidMazeDbMetadata.GamePlayerProfile.GAMEPLAYERPROFILE_DEFAULT_ORDER);
     }
 
     /**
-     * Returns the array of GameProfile fetched from database
+     * Returns the array of GamePlayerProfile fetched from database
      * 
      * @return
-     *     the array of GameProfile
+     *     the array of GamePlayerProfile
      */
-    public com.sgxmobileapps.droidmaze.game.GameProfile[] getAllGameProfile() {
-        Cursor cursor = getCursorGameProfile();
+    public com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile[] getAllGamePlayerProfile() {
+        Cursor cursor = getCursorGamePlayerProfile();
         if (cursor == null) {
-            return new com.sgxmobileapps.droidmaze.game.GameProfile[ 0 ] ;
+            return new com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile[ 0 ] ;
         }
-        com.sgxmobileapps.droidmaze.game.GameProfile[] entities = new com.sgxmobileapps.droidmaze.game.GameProfile[cursor.getCount()] ;
+        com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile[] entities = new com.sgxmobileapps.droidmaze.game.model.GamePlayerProfile[cursor.getCount()] ;
         if (cursor.moveToFirst()) {
             do {
-                entities[cursor.getPosition()] = fillFromCursorGameProfile(cursor);
+                entities[cursor.getPosition()] = fillFromCursorGamePlayerProfile(cursor);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -295,7 +298,7 @@ public class DroidMazeDbAdapter {
          */
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(SQL_GAMEPROFILE_CREATE_TABLE);
+            db.execSQL(SQL_GAMEPLAYERPROFILE_CREATE_TABLE);
         }
 
         /**
@@ -309,7 +312,7 @@ public class DroidMazeDbAdapter {
                 return ;
             }
             // Upgrade the existing database to conform to the new version. Multiple previous versions can be handled by comparing _oldVersion and _newVersion values
-            db.execSQL(SQL_GAMEPROFILE_DROP_TABLE);
+            db.execSQL(SQL_GAMEPLAYERPROFILE_DROP_TABLE);
             // The simplest case is to drop the old table and create a new one.
             // Create a new one.
             onCreate(db);

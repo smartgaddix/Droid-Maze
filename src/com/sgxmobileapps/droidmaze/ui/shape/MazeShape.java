@@ -151,9 +151,9 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
     }
     
     /* (non-Javadoc)
-     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#init(boolean, org.anddev.andengine.util.Callback, org.anddev.andengine.util.Callback)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#init(boolean, org.anddev.andengine.util.Callback, org.anddev.andengine.util.Callback, android.content.Context)
      */
-    public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback) {
+    public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback, Context ctx) {
         setVisible(visible);
         mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
         

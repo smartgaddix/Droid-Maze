@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.  
  */
-package com.sgxmobileapps.droidmaze.game;
+package com.sgxmobileapps.droidmaze.game.model;
 
 import com.sgxmobileapps.androidsqlhelper.annotation.PersistentEntity;
 import com.sgxmobileapps.androidsqlhelper.annotation.PersistentField;
@@ -25,9 +25,9 @@ import com.sgxmobileapps.androidsqlhelper.annotation.PersistentField;
  * @author Massimo Gaddini
  */
 @PersistentEntity(fieldPrefix="m", unique={"ProfileId"})
-public class GameProfile {
+public class GamePlayerProfile {
     
-    @PersistentField(unique=true)
+    @PersistentField
     private String mProfileId;
     
     @PersistentField
@@ -36,10 +36,13 @@ public class GameProfile {
     @PersistentField
     private long mTotalTime;
     
+    @PersistentField
+    private boolean mCurrent;
+    
     /**
      * 
      */
-    public GameProfile() {
+    public GamePlayerProfile() {
         // TODO Auto-generated constructor stub
     }
     
@@ -84,4 +87,18 @@ public class GameProfile {
     public void setTotalTime(long totalTime) {
         mTotalTime = totalTime;
     }
+
+    /**
+     * @return the current
+     */
+    public boolean isCurrent() {
+        return mCurrent;
+    }
+    
+    /**
+     * @param current the current to set
+     */
+    public void setCurrent(boolean current) {
+        mCurrent = current;
+    }    
 }

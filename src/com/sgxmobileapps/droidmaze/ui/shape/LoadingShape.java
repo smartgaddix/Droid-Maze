@@ -73,11 +73,11 @@ public class LoadingShape extends BaseRectangle implements ComplexShape {
     }
 
     /* (non-Javadoc)
-     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#init(boolean, org.anddev.andengine.util.Callback, org.anddev.andengine.util.Callback)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#init(boolean, org.anddev.andengine.util.Callback, org.anddev.andengine.util.Callback, android.content.Context)
      */
     @Override
     public void init(boolean visible, Callback<Boolean> callback,
-            Callback<Exception> exceptionCallback) {
+            Callback<Exception> exceptionCallback, Context ctx) {
     	
     	setVisible(visible);
     	

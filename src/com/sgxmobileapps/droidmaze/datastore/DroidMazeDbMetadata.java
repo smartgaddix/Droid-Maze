@@ -29,18 +29,20 @@ public class DroidMazeDbMetadata {
     public final static String DATABASE_NAME = "droidmaze.db";
     public final static int DATABASE_VERSION = 1;
 
-    public final static class GameProfile {
+    public final static class GamePlayerProfile {
 
-        public final static String GAMEPROFILE_TABLE_NAME = "GAMEPROFILE";
-        public final static String GAMEPROFILE_DEFAULT_ORDER = null;
-        public final static String GAMEPROFILE_ID_COL = "_id";
-        protected final static int GAMEPROFILE_ID_IDX = 0;
-        public final static String GAMEPROFILE_PROFILEID_COL = "PROFILEID";
-        protected final static int GAMEPROFILE_PROFILEID_IDX = 1;
-        public final static String GAMEPROFILE_LEVEL_COL = "LEVEL";
-        protected final static int GAMEPROFILE_LEVEL_IDX = 2;
-        public final static String GAMEPROFILE_TOTALTIME_COL = "TOTALTIME";
-        protected final static int GAMEPROFILE_TOTALTIME_IDX = 3;
+        public final static String GAMEPLAYERPROFILE_TABLE_NAME = "GAMEPLAYERPROFILE";
+        public final static String GAMEPLAYERPROFILE_DEFAULT_ORDER = null;
+        public final static String GAMEPLAYERPROFILE_ID_COL = "_id";
+        protected final static int GAMEPLAYERPROFILE_ID_IDX = 0;
+        public final static String GAMEPLAYERPROFILE_PROFILEID_COL = "PROFILEID";
+        protected final static int GAMEPLAYERPROFILE_PROFILEID_IDX = 1;
+        public final static String GAMEPLAYERPROFILE_LEVEL_COL = "LEVEL";
+        protected final static int GAMEPLAYERPROFILE_LEVEL_IDX = 2;
+        public final static String GAMEPLAYERPROFILE_TOTALTIME_COL = "TOTALTIME";
+        protected final static int GAMEPLAYERPROFILE_TOTALTIME_IDX = 3;
+        public final static String GAMEPLAYERPROFILE_CURRENT_COL = "CURRENT";
+        protected final static int GAMEPLAYERPROFILE_CURRENT_IDX = 4;
 
     }
 

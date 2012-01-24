@@ -17,7 +17,7 @@ package com.sgxmobileapps.droidmaze.ui;
 
 import android.util.DisplayMetrics;
 
-import com.sgxmobileapps.droidmaze.game.GameProfileManager;
+import com.sgxmobileapps.droidmaze.game.GameLevelManager;
 import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
 import com.sgxmobileapps.droidmaze.ui.shape.LoadingShape;
 import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
@@ -52,7 +52,7 @@ public class MazeActivity extends BaseGameActivity {
     private int                mMazeAreaWidth;
     private int                mMazeAreaHeight;
     
-    private GameProfileManager mLevelManager = new GameProfileManager(); /* TODO */
+    private GameLevelManager mLevelManager;
     private LevelBarShape mLevelBar; 
     private MazeShape mMaze;
     private LoadingShape mLoading;
@@ -62,6 +62,7 @@ public class MazeActivity extends BaseGameActivity {
      */
     @Override
     public Engine onLoadEngine() {
+        mLevelManager = GameLevelManager.getInstance(this);
         computeDimension();
         Camera camera = new Camera(0, 0, mCameraWidth, mCameraHeight);
         return new Engine(new EngineOptions(true, ScreenOrientation.PORTRAIT,
@@ -97,7 +98,7 @@ public class MazeActivity extends BaseGameActivity {
         scene.setBackground(new ColorBackground((float) ( 51.0 / 255.0 ),
                 (float) ( 189.0 / 255.0 ), (float) ( 200.0 / 255.0 )));
 
-        mLevelBar.init(false, null, null);
+        mLevelBar.init(false, null, null, this);
         scene.attachChild(mLevelBar, 0);
 
         mMaze.init(false, 
@@ -110,10 +111,10 @@ public class MazeActivity extends BaseGameActivity {
                         mMaze.enable(getEngine());
                     }
             
-                }, null);
+                }, null, this);
         scene.attachChild(mMaze, 1);
         
-        mLoading.init(true, null, null);
+        mLoading.init(true, null, null, this);
         scene.attachChild(mLoading, 2);
 
         return scene;
