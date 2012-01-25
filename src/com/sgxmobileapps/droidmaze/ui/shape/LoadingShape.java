@@ -103,12 +103,4 @@ public class LoadingShape extends BaseRectangle implements ComplexShape {
 
         textureManager.loadTexture(backgroundTextureAtlas);
     }
-    
-    /* (non-Javadoc)
-     * @see org.anddev.andengine.entity.shape.Shape#doDraw(javax.microedition.khronos.opengles.GL10, org.anddev.andengine.engine.camera.Camera)
-     */
-    @Override
-    protected void doDraw(GL10 pGL, Camera pCamera) {
-    }
-
 }

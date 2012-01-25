@@ -27,6 +27,7 @@ import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
@@ -42,18 +43,20 @@ import org.anddev.andengine.util.Callback;
 public class MazeActivity extends BaseGameActivity {
     private static final float SCORE_BAR_HEIGHT_PERC = 0.1f;
     private static final float AD_BAR_HEIGHT_PERC = 0.1f;
+    private static final int SEP_LINE_WIDTH = 4;
 
-    private int                mCameraWidth;
-    private int                mCameraHeight;
-    private int                mScoreBarWidth;
-    private int                mScoreBarHeight;
-    private int                mAdBarWidth;
-    private int                mAdBarHeight;
-    private int                mMazeAreaWidth;
-    private int                mMazeAreaHeight;
+    private int mCameraWidth;
+    private int mCameraHeight;
+    private int mScoreBarWidth;
+    private int mScoreBarHeight;
+    private int mAdBarWidth;
+    private int mAdBarHeight;
+    private int mMazeAreaWidth;
+    private int mMazeAreaHeight;                
     
     private GameLevelManager mLevelManager;
-    private LevelBarShape mLevelBar; 
+    private LevelBarShape mLevelBar;
+    private Line mSeparator;
     private MazeShape mMaze;
     private LoadingShape mLoading;
     
@@ -77,8 +80,11 @@ public class MazeActivity extends BaseGameActivity {
     public void onLoadResources() {
         mLevelBar = new LevelBarShape(0, 0, mScoreBarWidth, mScoreBarHeight);
         mLevelBar.loadResources(getEngine().getTextureManager(), getEngine().getFontManager(), this);
+       
+        mSeparator = new Line(0, mScoreBarHeight+2, mScoreBarWidth, mScoreBarHeight+2);
+        mSeparator.setLineWidth(SEP_LINE_WIDTH);
         
-        mMaze = new MazeShape(0, mScoreBarHeight, 
+        mMaze = new MazeShape(0, mScoreBarHeight + SEP_LINE_WIDTH, 
         		mMazeAreaWidth, mMazeAreaHeight, 
         		mLevelManager.getMazeHeight(), mLevelManager.getMazeWidth(), 
         		mLevelManager.getGenerator(), this);
@@ -98,9 +104,14 @@ public class MazeActivity extends BaseGameActivity {
         scene.setBackground(new ColorBackground((float) ( 51.0 / 255.0 ),
                 (float) ( 189.0 / 255.0 ), (float) ( 200.0 / 255.0 )));
 
+        mLevelBar.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         mLevelBar.init(false, null, null, this);
         scene.attachChild(mLevelBar, 0);
+        
+        mSeparator.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+        scene.attachChild(mSeparator);
 
+        mMaze.setColor(0.0f, 0.0f, 0.0f, 1.0f);
         mMaze.init(false, 
                 new Callback<Boolean>(){
 
@@ -141,7 +152,7 @@ public class MazeActivity extends BaseGameActivity {
         mAdBarHeight = (int) ( mCameraHeight * AD_BAR_HEIGHT_PERC );
         mAdBarWidth = mCameraWidth;
 
-        mMazeAreaHeight = mCameraHeight - mScoreBarHeight - mAdBarHeight;
+        mMazeAreaHeight = mCameraHeight - mScoreBarHeight - mAdBarHeight - SEP_LINE_WIDTH;
         mMazeAreaWidth = mCameraWidth;
     }
 }

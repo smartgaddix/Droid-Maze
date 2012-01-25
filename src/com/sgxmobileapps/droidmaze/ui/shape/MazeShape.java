@@ -57,7 +57,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author Massimo Gaddini
  *
  */
-public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerometerListener {
+public class MazeShape extends Rectangle implements ComplexShape, IAccelerometerListener {
 
     
     /**
@@ -145,7 +145,7 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
         BitmapTextureAtlas texture = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
         /* TextureRegion */
-        mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture, ctx, "gfx/face_circle.png", 0, 0); // 32x32
+        mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture, ctx, "gfx/ball.png", 0, 0); // 32x32
         
         textureManager.loadTexture(texture);
     }
@@ -155,9 +155,8 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
      */
     public void init(boolean visible, final Callback<Boolean> callback, final Callback<Exception> exceptionCallback, Context ctx) {
         setVisible(visible);
-        mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
         
-        //mPhysicsWorld = new PhysicsWorld(new Vector2(SensorManager.GRAVITY_EARTH, 0), false);
+        mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
         
         new AsyncTask<Void, Void, Boolean>() {
             private Exception mException = null;
@@ -373,12 +372,5 @@ public class MazeShape extends BaseRectangle implements ComplexShape, IAccelerom
      */
     protected float getMarkerStartPositionY() {
         return WALL_WIDTH;
-    }
-
-    /* (non-Javadoc)
-     * @see org.anddev.andengine.entity.shape.Shape#doDraw(javax.microedition.khronos.opengles.GL10, org.anddev.andengine.engine.camera.Camera)
-     */
-    @Override
-    protected void doDraw(GL10 pGL, Camera pCamera) {
     }
 }

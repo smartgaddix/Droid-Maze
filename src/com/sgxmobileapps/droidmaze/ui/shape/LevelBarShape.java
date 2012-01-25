@@ -25,6 +25,9 @@ import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.primitive.BaseRectangle;
+import org.anddev.andengine.entity.primitive.Line;
+import org.anddev.andengine.entity.primitive.Rectangle;
+import org.anddev.andengine.entity.shape.Shape;
 import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.opengl.font.Font;
@@ -45,7 +48,7 @@ import javax.microedition.khronos.opengles.GL10;
  * @author Massimo Gaddini
  *
  */
-public class LevelBarShape extends BaseRectangle implements ComplexShape{
+public class LevelBarShape extends Rectangle implements ComplexShape{
     
     /** 
      * Elapsed seconds displayed in the level bar
@@ -121,9 +124,12 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
         setVisible(visible);
         
         mGameLevelManager = GameLevelManager.getInstance(ctx);
-        
-        /* transparent white */
-        setColor(1.0f, 1.0f, 1.0f, 0.0f);
+                
+//        /* ground black line */
+//        Line ground = new Line(0, getHeightScaled()-2, getWidthScaled(), getHeightScaled()-2);
+//        ground.setLineWidth(4);
+//        ground.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+//        attachChild(ground);
         
         /* label for elapsed time */
         mElapsedText = new ChangeableText(0, (getHeightScaled() - mTimeFont.getLineHeight())/2, mTimeFont, "00:00", "XXXXX".length());
@@ -163,15 +169,5 @@ public class LevelBarShape extends BaseRectangle implements ComplexShape{
                 mTotalText.setText(String.format("%02d:%02d", totalTime/60, totalTime%60));
             }
         }));
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.anddev.andengine.entity.shape.Shape#doDraw(javax.microedition.khronos.opengles.GL10, org.anddev.andengine.engine.camera.Camera)
-     */
-    @Override
-    protected void doDraw(GL10 pGL, Camera pCamera) {
-    }
-    
-    
+    } 
 }
