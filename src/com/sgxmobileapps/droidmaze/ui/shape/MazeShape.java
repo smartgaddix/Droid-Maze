@@ -27,8 +27,6 @@ import com.sgxmobileapps.droidmaze.maze.generator.MazeCell;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
 import org.anddev.andengine.engine.Engine;
-import org.anddev.andengine.engine.camera.Camera;
-import org.anddev.andengine.entity.primitive.BaseRectangle;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.shape.Shape;
 import org.anddev.andengine.entity.sprite.Sprite;
@@ -47,7 +45,6 @@ import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 import org.anddev.andengine.util.Callback;
 import org.anddev.andengine.util.Debug;
 
-import javax.microedition.khronos.opengles.GL10;
 
 
 /**

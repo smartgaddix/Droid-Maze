@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Droid Maze</string>
-    <string name="dialog_loading_title">Loading...</string>
-    <string name="dialog_loading_message">Loading Maze</string>
 </resources>

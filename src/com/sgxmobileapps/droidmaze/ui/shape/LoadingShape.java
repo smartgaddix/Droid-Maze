@@ -15,12 +15,9 @@
  */
 package com.sgxmobileapps.droidmaze.ui.shape;
 
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
 
 import org.anddev.andengine.engine.Engine;
-import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.entity.primitive.BaseRectangle;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.font.FontManager;

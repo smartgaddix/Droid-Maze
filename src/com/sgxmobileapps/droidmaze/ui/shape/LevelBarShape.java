@@ -21,13 +21,9 @@ import android.graphics.Color;
 import com.sgxmobileapps.droidmaze.game.GameLevelManager;
 
 import org.anddev.andengine.engine.Engine;
-import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
-import org.anddev.andengine.entity.primitive.BaseRectangle;
-import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.primitive.Rectangle;
-import org.anddev.andengine.entity.shape.Shape;
 import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.opengl.font.Font;
@@ -37,9 +33,6 @@ import org.anddev.andengine.opengl.texture.TextureManager;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.util.Callback;
-import org.anddev.andengine.util.HorizontalAlign;
-
-import javax.microedition.khronos.opengles.GL10;
 
 
 /**
@@ -124,19 +117,13 @@ public class LevelBarShape extends Rectangle implements ComplexShape{
         setVisible(visible);
         
         mGameLevelManager = GameLevelManager.getInstance(ctx);
-                
-//        /* ground black line */
-//        Line ground = new Line(0, getHeightScaled()-2, getWidthScaled(), getHeightScaled()-2);
-//        ground.setLineWidth(4);
-//        ground.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-//        attachChild(ground);
         
         /* label for elapsed time */
         mElapsedText = new ChangeableText(0, (getHeightScaled() - mTimeFont.getLineHeight())/2, mTimeFont, "00:00", "XXXXX".length());
         attachChild(mElapsedText);
         
         /* label for level */
-        String levelText = String.format("%02d", (int)(Math.random()*50)/*mGameLevelManager.getLevel()*/);
+        String levelText = String.format("%02d", mGameLevelManager.getLevel());
         mLevelText = new Text((getWidthScaled() - mFontLevel.getStringWidth("XX"))/2, 
                 (getHeightScaled() - mFontLevel.getLineHeight())/2, 
                 mFontLevel, levelText);
