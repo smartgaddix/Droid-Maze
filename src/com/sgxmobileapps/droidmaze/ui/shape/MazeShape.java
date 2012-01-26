@@ -27,6 +27,7 @@ import com.sgxmobileapps.droidmaze.maze.generator.MazeCell;
 import com.sgxmobileapps.droidmaze.maze.generator.MazeGenerator;
 
 import org.anddev.andengine.engine.Engine;
+import org.anddev.andengine.engine.handler.IUpdateHandler;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.shape.Shape;
 import org.anddev.andengine.entity.sprite.Sprite;
@@ -44,6 +45,7 @@ import org.anddev.andengine.sensor.accelerometer.AccelerometerData;
 import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 import org.anddev.andengine.util.Callback;
 import org.anddev.andengine.util.Debug;
+
 
 
 
@@ -100,6 +102,21 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
     private TextureRegion mMarkerTexture;
     
     /**
+     * The target's texture
+     */
+    private TextureRegion mTargetTexture;
+    
+    /**
+     * The target's sprite
+     */
+    private Sprite mTargetSprite;
+    
+    /**
+     * The marker's sprite
+     */
+    private Sprite mMarkerSprite;
+    
+    /**
      * The context
      */
     private Context mCtx;
@@ -139,12 +156,14 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
      */
     public void loadResources(TextureManager textureManager, FontManager fontManager, Context ctx) {
         /* Texture */
-        BitmapTextureAtlas texture = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas textureMarker = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas textureTarget = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
         /* TextureRegion */
-        mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture, ctx, "gfx/ball.png", 0, 0); // 32x32
+        mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureMarker, ctx, "gfx/ball.png", 0, 0); // 32x32
+        mTargetTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureTarget, ctx, "gfx/target.png", 0, 0); // 32x32
         
-        textureManager.loadTexture(texture);
+        textureManager.loadTextures(textureMarker, textureTarget);
     }
     
     /* (non-Javadoc)
@@ -184,7 +203,9 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
                         drawMaze();
                         Debug.i("Maze drawing finish. Add marker");
                         addMarker();
-                        Debug.i("Add marker finish");
+                        Debug.i("Add marker finish. Add target");
+                        addTarget();
+                        Debug.i("Add target finish");
                         
                         callback.onCallback(result);
                     } catch(Exception e){
@@ -210,6 +231,19 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
      */
     public void enable(Engine engine) {
         setVisible(true);
+        
+        registerUpdateHandler(new IUpdateHandler() {
+            @Override
+            public void reset() { }
+
+            @Override
+            public void onUpdate(final float pSecondsElapsed) {
+                if(mMarkerSprite.collidesWith(mTargetSprite)) {
+                    Debug.i("COLLISION !!!!!!!");  /* TODO */
+                }
+            }
+        });
+        
         engine.enableAccelerometerSensor(mCtx, this);
         engine.registerUpdateHandler(mPhysicsWorld);
     }
@@ -232,26 +266,48 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
             scaleXY = 1;
         }
 
-        Sprite markerSprite = new Sprite(0, 0, 
+        mMarkerSprite = new Sprite(0, 0, 
                 mMarkerTexture.getWidth() * scaleXY, 
                 mMarkerTexture.getHeight() * scaleXY, 
                 mMarkerTexture);
 
-        markerSprite.setPosition(getMarkerStartPositionX(), getMarkerStartPositionY());
+        mMarkerSprite.setPosition(getMarkerStartPositionX(), getMarkerStartPositionY());
 
         FixtureDef markerFixtureDef = PhysicsFactory.createFixtureDef(1, 0, 0);
-        Body body = PhysicsFactory.createCircleBody(mPhysicsWorld, markerSprite,
+        Body body = PhysicsFactory.createCircleBody(mPhysicsWorld, mMarkerSprite,
                 BodyType.DynamicBody, markerFixtureDef);
 
-        attachChild(markerSprite);
-        mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(markerSprite, body, true, true));
+        attachChild(mMarkerSprite);
+        mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(mMarkerSprite, body, true, true));
+    }
+    
+    protected void addTarget() {
+        float scaleXY = getMaxMarkerDim() * 0.8f / mTargetTexture.getWidth();
+
+        if (scaleXY > 1) {
+            scaleXY = 1;
+        }
+
+        mTargetSprite = new Sprite(0, 0, 
+                mTargetTexture.getWidth() * scaleXY, 
+                mTargetTexture.getHeight() * scaleXY, 
+                mTargetTexture);
+
+        mTargetSprite.setPosition(getTargetPositionX(), getTargetPositionY());
+
+        FixtureDef targetFixtureDef = PhysicsFactory.createFixtureDef(1, 0, 0);
+        Body body = PhysicsFactory.createCircleBody(mPhysicsWorld, mTargetSprite,
+                BodyType.StaticBody, targetFixtureDef);
+
+        attachChild(mTargetSprite);
+        mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(mTargetSprite, body, true, true));
     }
 
     protected void drawMaze() {
         mStepX = ( getWidthScaled() - ( mMazeWidth * WALL_WIDTH ) - WALL_WIDTH ) / (float) mMazeWidth;
         mStepY = ( getHeightScaled() - ( mMazeHeight * WALL_WIDTH ) - WALL_WIDTH ) / (float) mMazeHeight;
 
-        FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(1, 0, 0);
+        FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(1, 0.2f, 0);
 
         int start = -1;
         int end = -1;
@@ -369,5 +425,21 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
      */
     protected float getMarkerStartPositionY() {
         return WALL_WIDTH;
+    }
+    
+    /**
+     * Returns the target position's coordinate X
+     * @return the target position's coordinate X
+     */
+    protected float getTargetPositionX() {
+        return (mStepX + WALL_WIDTH) * (mMazeWidth - 1) + WALL_WIDTH + (mStepX - mTargetSprite.getWidthScaled())/2f;
+    }
+
+    /**
+     * Returns the target position's coordinate Y
+     * @return the target position's coordinate Y
+     */
+    protected float getTargetPositionY() {
+        return (mStepY + WALL_WIDTH) * (mMazeHeight - 1) + WALL_WIDTH + (mStepY - mTargetSprite.getHeightScaled())/2f;
     }
 }

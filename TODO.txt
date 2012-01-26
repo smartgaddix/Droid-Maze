@@ -1,3 +1,4 @@
+- Use of Line instead of Rectangle in Maze drawing
 - code comments
 - Constants class for resources path etc
 - marker track drawing

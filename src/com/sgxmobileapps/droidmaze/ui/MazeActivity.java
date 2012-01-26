@@ -109,7 +109,7 @@ public class MazeActivity extends BaseGameActivity {
         scene.attachChild(mLevelBar, 0);
         
         mSeparator.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-        scene.attachChild(mSeparator);
+        scene.attachChild(mSeparator, 1);
 
         mMaze.setColor(0.0f, 0.0f, 0.0f, 1.0f);
         mMaze.init(false, 
@@ -123,10 +123,10 @@ public class MazeActivity extends BaseGameActivity {
                     }
             
                 }, null, this);
-        scene.attachChild(mMaze, 1);
+        scene.attachChild(mMaze, 2);
         
         mLoading.init(true, null, null, this);
-        scene.attachChild(mLoading, 2);
+        scene.attachChild(mLoading, 3);
 
         return scene;
     }
