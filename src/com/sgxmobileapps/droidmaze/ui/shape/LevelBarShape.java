@@ -46,7 +46,7 @@ public class LevelBarShape extends Rectangle implements ComplexShape{
     /** 
      * Elapsed seconds displayed in the level bar
      */
-    private long mElapsedSeconds = 0;
+    private long mElapsedSeconds;
     
     /**
      * Text label for elapsed time
@@ -77,6 +77,11 @@ public class LevelBarShape extends Rectangle implements ComplexShape{
      * Font used for text of level number in the level bar
      */
     private Font mFontLevel;
+    
+    /**
+     * Timer handler for time count
+     */
+    private TimerHandler mTimerHandler;
 
     
     
@@ -146,7 +151,7 @@ public class LevelBarShape extends Rectangle implements ComplexShape{
         setVisible(true);
         
         /* timer handler for updating the elapsed time label */
-        engine.registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
+        mTimerHandler = new TimerHandler(1.0f, true, new ITimerCallback() {
             public void onTimePassed(final TimerHandler pTimerHandler) {
                 mElapsedSeconds += (long)pTimerHandler.getTimerSeconds();
                 mElapsedText.setText(String.format("%02d:%02d", mElapsedSeconds/60, mElapsedSeconds%60));
@@ -155,6 +160,19 @@ public class LevelBarShape extends Rectangle implements ComplexShape{
                 
                 mTotalText.setText(String.format("%02d:%02d", totalTime/60, totalTime%60));
             }
-        }));
+        });
+        
+        engine.registerUpdateHandler(mTimerHandler);
     } 
+    
+    /* (non-Javadoc)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#disable(org.anddev.andengine.engine.Engine)
+     */
+    public void disable(Engine engine) {
+        engine.unregisterUpdateHandler(mTimerHandler);
+    }
+    
+    public long getElapsedSeconds(){
+        return mElapsedSeconds;
+    }
 }

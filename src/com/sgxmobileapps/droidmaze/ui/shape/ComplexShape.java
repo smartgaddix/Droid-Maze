@@ -57,4 +57,10 @@ public interface ComplexShape {
      * @param engine
      */
     void enable(Engine engine);
+    
+    /**
+     * Disables update handler and so on
+     * @param engine
+     */
+    void disable(Engine engine);
 }

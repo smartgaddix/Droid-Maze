@@ -15,12 +15,14 @@
  */
 package com.sgxmobileapps.droidmaze.ui;
 
+import android.content.Context;
 import android.util.DisplayMetrics;
 
 import com.sgxmobileapps.droidmaze.game.GameLevelManager;
 import com.sgxmobileapps.droidmaze.ui.shape.LevelBarShape;
 import com.sgxmobileapps.droidmaze.ui.shape.LoadingShape;
 import com.sgxmobileapps.droidmaze.ui.shape.MazeShape;
+import com.sgxmobileapps.droidmaze.util.ActivityUtils;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
@@ -59,6 +61,22 @@ public class MazeActivity extends BaseGameActivity {
     private Line mSeparator;
     private MazeShape mMaze;
     private LoadingShape mLoading;
+    
+    class MazeSolvedCallBack implements Callback<Void>{
+
+        @Override
+        public void onCallback(Void pCallbackValue) {
+            mMaze.disable(mEngine);
+            mLevelBar.disable(mEngine);
+            
+            long seconds = mLevelBar.getElapsedSeconds();
+            mLevelManager.nextLevel(seconds);
+            
+            ActivityUtils.launchActivity(MazeActivity.this, MazeActivity.class);
+            finish();
+        }
+        
+    }
     
     /* (non-Javadoc)
      * @see org.anddev.andengine.ui.IGameInterface#onLoadEngine()
@@ -120,6 +138,7 @@ public class MazeActivity extends BaseGameActivity {
                         scene.detachChild(mLoading);
                     	mLevelBar.enable(getEngine());
                         mMaze.enable(getEngine());
+                        mMaze.setSolvedCallback(new MazeSolvedCallBack());
                     }
             
                 }, null, this);

@@ -125,7 +125,16 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
      * The physics world used for move marker
      */
     private PhysicsWorld mPhysicsWorld;
+    
+    /**
+     * The AndEngine engine
+     */
+    private Engine mEngine;
 
+    /**
+     * The update handler for the shape
+     */
+    IUpdateHandler mUpdateHandler;
     
     /**
      * Constructs MazeShape object.
@@ -232,20 +241,43 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
     public void enable(Engine engine) {
         setVisible(true);
         
-        registerUpdateHandler(new IUpdateHandler() {
+        mEngine = engine;
+        
+        engine.enableAccelerometerSensor(mCtx, this);
+        engine.registerUpdateHandler(mPhysicsWorld);
+    }
+    
+    /* (non-Javadoc)
+     * @see com.sgxmobileapps.droidmaze.ui.shape.ComplexShape#disable(org.anddev.andengine.engine.Engine)
+     */
+    public void disable(Engine engine) {
+        engine.disableAccelerometerSensor(mCtx);
+        engine.unregisterUpdateHandler(mPhysicsWorld);
+        if (mUpdateHandler != null) {
+            unregisterUpdateHandler(mUpdateHandler);
+        }
+    }
+    
+    public void setSolvedCallback(final Callback<Void> callback){
+        
+        mUpdateHandler = new IUpdateHandler() {
+            
+            private boolean mSolved = false;
+            
             @Override
             public void reset() { }
 
             @Override
             public void onUpdate(final float pSecondsElapsed) {
-                if(mMarkerSprite.collidesWith(mTargetSprite)) {
-                    Debug.i("COLLISION !!!!!!!");  /* TODO */
+                if(mMarkerSprite.collidesWith(mTargetSprite) && (!mSolved)) {
+                    mSolved = true;
+                    Debug.i("Collision !!! Maze solved!");  
+                    callback.onCallback(null);
                 }
             }
-        });
+        };
         
-        engine.enableAccelerometerSensor(mCtx, this);
-        engine.registerUpdateHandler(mPhysicsWorld);
+        registerUpdateHandler(mUpdateHandler);
     }
 
     /* (non-Javadoc)

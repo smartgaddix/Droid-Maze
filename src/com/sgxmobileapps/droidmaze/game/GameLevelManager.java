@@ -48,6 +48,7 @@ public class GameLevelManager {
 
     private GamePlayerProfile mGamePlayerProfile;
     private MazeGenerator mGenerator;
+    private DroidMazeDbAdapter mDbAdapter;
     
     private static GameLevelManager mInstance;
     
@@ -60,11 +61,10 @@ public class GameLevelManager {
     }
 
     private GameLevelManager(Context context) {
-        /* TODO: load state from db */
-        DroidMazeDbAdapter dbAdapter = new DroidMazeDbAdapter(context);
+        mDbAdapter = new DroidMazeDbAdapter(context);
         
-        dbAdapter.open();
-        GamePlayerProfile[] profiles = dbAdapter.getAllGamePlayerProfile();
+        mDbAdapter.open();
+        GamePlayerProfile[] profiles = mDbAdapter.getAllGamePlayerProfile();
         
         mGamePlayerProfile = null;
         for (GamePlayerProfile gp: profiles){
@@ -80,12 +80,21 @@ public class GameLevelManager {
             mGamePlayerProfile.setLevel(1);
             mGamePlayerProfile.setTotalTime(0);
             mGamePlayerProfile.setCurrent(true);
-            dbAdapter.addGamePlayerProfile(mGamePlayerProfile);
+            mDbAdapter.addGamePlayerProfile(mGamePlayerProfile);
         }
         
-        dbAdapter.close();
+        mDbAdapter.close();
         
         mGenerator = new IterativeBacktrackingMazeGenerator();
+    }
+    
+    public void nextLevel(long elapsedSeconds){
+        mGamePlayerProfile.setTotalTime(mGamePlayerProfile.getTotalTime() + elapsedSeconds);
+        mGamePlayerProfile.setLevel(mGamePlayerProfile.getLevel() + 1);
+        
+        mDbAdapter.open();
+        mDbAdapter.updateGamePlayerProfile(mGamePlayerProfile);
+        mDbAdapter.close();
     }
 
     /**
@@ -120,6 +129,9 @@ public class GameLevelManager {
      * @return the mazeWidth
      */
     public int getMazeWidth() {
+        if (mGamePlayerProfile.getLevel() >= mLevels.length){
+            return mLevels[mLevels.length - 1].mMazeWidth;
+        }
         return mLevels[mGamePlayerProfile.getLevel() - 1].mMazeWidth;
     }
 
@@ -127,6 +139,9 @@ public class GameLevelManager {
      * @return the mazeHeight
      */
     public int getMazeHeight() {
+        if (mGamePlayerProfile.getLevel() >= mLevels.length){
+            return mLevels[mLevels.length - 1].mMazeHeight;
+        }
         return mLevels[mGamePlayerProfile.getLevel() - 1].mMazeHeight;
     }
 
@@ -134,6 +149,9 @@ public class GameLevelManager {
      * @return the accelerationFactor
      */
     public float getAccelerationFactor() {
+        if (mGamePlayerProfile.getLevel() >= mLevels.length){
+            return mLevels[mLevels.length - 1].mAccelerationFactor;
+        }
         return mLevels[mGamePlayerProfile.getLevel() - 1].mAccelerationFactor;
     }
 }
