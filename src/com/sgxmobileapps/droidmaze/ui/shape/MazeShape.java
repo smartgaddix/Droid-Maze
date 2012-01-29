@@ -170,7 +170,7 @@ public class MazeShape extends Rectangle implements ComplexShape, IAccelerometer
         
         /* TextureRegion */
         mMarkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureMarker, ctx, "gfx/ball.png", 0, 0); // 32x32
-        mTargetTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureTarget, ctx, "gfx/target.png", 0, 0); // 32x32
+        mTargetTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureTarget, ctx, "gfx/target_hole.png", 0, 0); // 32x32
         
         textureManager.loadTextures(textureMarker, textureTarget);
     }
