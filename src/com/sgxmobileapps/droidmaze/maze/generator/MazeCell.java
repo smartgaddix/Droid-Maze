@@ -31,6 +31,10 @@ public abstract class MazeCell {
     public MazeCell(int x, int y) {
         mX = x;
         mY = y;
+        init();
+    }
+    
+    public void init() {
         mCarvedWalls = 0;
     }
 

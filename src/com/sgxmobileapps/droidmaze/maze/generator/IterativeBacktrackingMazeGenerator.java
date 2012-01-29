@@ -39,6 +39,7 @@ public class IterativeBacktrackingMazeGenerator implements MazeGenerator {
         }
 
         void init(Random random) {
+            super.init();
             Collections.shuffle(mDirections, random);
             mNextDirectionIndex = -1;
         }

@@ -35,6 +35,11 @@ public class PrimMazeGenerator implements MazeGenerator {
         PrimCell(int x, int y) {
             super(x, y);
         }
+        
+        public void init() {
+            super.init();
+            mState = 0;
+        }
 
         boolean isOut() {
             return mState == 0;
@@ -50,10 +55,6 @@ public class PrimMazeGenerator implements MazeGenerator {
 
         void setIn() {
             mState |= CELL_IN;
-        }
-
-        void clear() {
-            mState = 0;
         }
     }
 
@@ -81,7 +82,7 @@ public class PrimMazeGenerator implements MazeGenerator {
                     mGrid[i][j] = new PrimCell(i, j);
                 }
 
-                mGrid[i][j].clear();
+                mGrid[i][j].init();
             }
         }
 

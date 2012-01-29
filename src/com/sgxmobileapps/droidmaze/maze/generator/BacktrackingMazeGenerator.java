@@ -36,6 +36,7 @@ public class BacktrackingMazeGenerator implements MazeGenerator {
         }
 
         void init(Random random) {
+            super.init();
             Collections.shuffle(mDirections, random);
         }
     }

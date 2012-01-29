@@ -37,6 +37,7 @@ public class KruskalMazeGenerator implements MazeGenerator {
         }
 
         public void init() {
+            super.init();
             mSet = new TreeSet<KruskalCell>();
             mSet.add(this);
         }
